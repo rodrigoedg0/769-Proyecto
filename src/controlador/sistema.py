@@ -144,7 +144,8 @@ class Sistema:
         return f"Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
-        return self.parqueo.ocupados
+    # Filtrar valores None y convertir todo a string
+        return [str(v) for v in self.parqueo.ocupados if v is not None]
 
     # -------------------------
     # REPORTES
