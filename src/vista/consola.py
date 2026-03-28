@@ -1,6 +1,7 @@
 class Consola:
     def __init__(self, sistema):
         self.sistema = sistema
+        self.rol = None
 
     def iniciar(self):
         print("=== SISTEMA DE PARQUEO ===")
@@ -13,28 +14,32 @@ class Consola:
             op = input("Seleccione: ")
 
             if op == "1":
-                self.registrar_usuario()
+                self.crear_usuario()
             elif op == "2":
                 if self.login():
                     self.menu_principal()
             elif op == "3":
                 break
 
-    def registrar_usuario(self):
+    def crear_usuario(self):
         u = input("Usuario: ")
         p = input("Password: ")
-        self.sistema.registrar_usuario(u, p)
-        print("Usuario registrado")
+        rol = input("Rol (admin/operador): ")
+
+        print(self.sistema.registrar_usuario(u, p, rol))
 
     def login(self):
         u = input("Usuario: ")
         p = input("Password: ")
 
-        if self.sistema.login(u, p):
-            print("Login exitoso")
+        ok, rol = self.sistema.login(u, p)
+
+        if ok:
+            self.rol = rol
+            print(f"Bienvenido {u} ({rol})")
             return True
         else:
-            print("Credenciales incorrectas")
+            print("Error login")
             return False
 
     def menu_principal(self):
@@ -43,30 +48,66 @@ class Consola:
             print("1. Registrar Vehiculo")
             print("2. Entrada")
             print("3. Salida")
-            print("4. Volver")
+            print("4. Reportes")
+            print("5. Configuración")
+            print("6. Ver Usuarios")
+            print("7. Ver Bitácora")
+            print("8. Salir")
 
             op = input("Seleccione: ")
 
             if op == "1":
-                self.registrar_vehiculo()
+                print(self.sistema.registrar_vehiculo(
+                    input("Placa: "), input("Tipo: ")
+                ))
+
             elif op == "2":
-                self.entrada()
+                print(self.sistema.registrar_entrada(input("Placa: ")))
+
             elif op == "3":
-                self.salida()
+                print(self.sistema.registrar_salida(input("Placa: ")))
+
             elif op == "4":
+                self.reportes()
+
+            elif op == "5":
+                self.configuracion()
+
+            elif op == "6":
+                if self.rol == "admin":
+                    for u in self.sistema.ver_usuarios():
+                        print(u)
+                else:
+                    print("Acceso denegado")
+
+            elif op == "7":
+                for linea in self.sistema.ver_bitacora():
+                    print(linea.strip())
+
+            elif op == "8":
                 break
 
-    def registrar_vehiculo(self):
-        placa = input("Placa: ")
-        tipo = input("Tipo: ")
+    def reportes(self):
+        datos = self.sistema.reporte_movimientos()
 
-        ok, msg = self.sistema.registrar_vehiculo(placa, tipo)
-        print(msg)
+        print("\n--- REPORTE ---")
+        for archivo, cantidad in datos:
+            print(f"{archivo} -> {cantidad} movimientos")
 
-    def entrada(self):
-        placa = input("Placa: ")
-        print(self.sistema.registrar_entrada(placa))
+    def configuracion(self):
+        if self.rol != "admin":
+            print("Solo admin")
+            return
 
-    def salida(self):
-        placa = input("Placa: ")
-        print(self.sistema.registrar_salida(placa))
+        print("\n1. Ver tarifa")
+        print("2. Cambiar tarifa")
+
+        op = input("Seleccione: ")
+
+        if op == "1":
+            print("Tarifa:", self.sistema.obtener_tarifa())
+
+        elif op == "2":
+            nueva = float(input("Nueva tarifa: "))
+            self.sistema.actualizar_tarifa(nueva)
+            print("Actualizada")
