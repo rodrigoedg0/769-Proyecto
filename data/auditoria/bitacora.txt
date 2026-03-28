@@ -1,1 +1,2 @@
 [20:09] Sistema -> Usuario creado: rodro
+[20:16] rodro -> Entrada PASDFSAD

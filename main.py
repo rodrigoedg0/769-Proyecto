@@ -1,10 +1,10 @@
 from src.controlador.sistema import Sistema
-from src.vista.consola import Consola
+from src.vista.gui import App
 
 def main():
     sistema = Sistema()
-    consola = Consola(sistema)
-    consola.iniciar()
+    app = App(sistema)
+    app.run()
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,5 @@
 class Usuario:
-    def __init__(self, username, password, rol="admin"):
+    def __init__(self, username, password, rol="operador"):
         self.username = username
         self.password = password
         self.rol = rol
