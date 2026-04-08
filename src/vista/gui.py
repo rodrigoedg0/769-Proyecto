@@ -42,7 +42,7 @@ class App:
             self.rol = rol
             self.menu()
         else:
-            messagebox.showerror("Error", "Login incorrecto")
+            messagebox.showerror("Error", "Acceso incorrecto")
 
     def registro(self):
         v = tk.Toplevel(self.root)

@@ -9,6 +9,6 @@ class Movimiento:
 
     def to_txt_entrada(self):
         return f"ENTRADA,{self.entrada}\n"
-
+ 
     def to_txt_salida(self):
         return f"SALIDA,{self.salida},TOTAL:{self.total}\n"

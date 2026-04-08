@@ -4,7 +4,7 @@ class Parqueo:
         self.ocupados = []
 
     def hay_espacio(self):
-        return len(self.ocupados) < self.capacidad
+        return len(self.ocupados)<self.capacidad
 
     def ingresar(self, placa):
         if placa not in self.ocupados:

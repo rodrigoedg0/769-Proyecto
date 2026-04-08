@@ -31,7 +31,7 @@ class Sistema:
         if not os.path.exists(ruta):
             with open(ruta, "w") as f:
                 f.write("tarifa_hora=5\n")
-
+ 
     # -------------------------
     # TARIFA
     # -------------------------
@@ -66,7 +66,7 @@ class Sistema:
         with open(ruta, "a") as f:
             f.write(Usuario(username, password, rol).to_txt())
 
-        return "Usuario registrado"
+        return "Usuario Registrado"
 
     def login(self, username, password):
         ruta = "data/configuracion/usuarios.txt"
@@ -116,7 +116,7 @@ class Sistema:
     # -------------------------
     def registrar_entrada(self, placa):
         if not self.parqueo.hay_espacio():
-            return "Parqueo lleno"
+            return "Parqueo Lleno"
 
         self.parqueo.ingresar(placa)
 
@@ -144,7 +144,7 @@ class Sistema:
         return f"Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
-    # Filtrar valores None y convertir todo a string
+    # Filtrar valores None y convertir todo a una cadena string
         return [str(v) for v in self.parqueo.ocupados if v is not None]
 
     # -------------------------
@@ -159,7 +159,7 @@ class Sistema:
                 datos.append((archivo, len(f.readlines())))
 
         return datos
-
+ 
     def ver_bitacora(self):
         ruta = "data/auditoria/bitacora.txt"
         if not os.path.exists(ruta):

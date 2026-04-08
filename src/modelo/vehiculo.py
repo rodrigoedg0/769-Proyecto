@@ -5,6 +5,6 @@ class Vehiculo:
 
     def validar_placa(self):
         return self.placa.isalnum() and len(self.placa) >= 5
-
+ 
     def to_txt(self):
         return f"Placa:{self.placa}\nTipo:{self.tipo}\n"
