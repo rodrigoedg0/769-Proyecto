@@ -78,6 +78,7 @@ class App:
         tk.Button(self.root, text="Tarifa", command=self.tarifa).pack()
         tk.Button(self.root, text="Reportes", command=self.reportes).pack()
         tk.Button(self.root, text="Bitácora", command=self.bitacora).pack()
+        tk.Button(self.root, text="Cerrar sesión", command=self.cerrar_sesion).pack(pady=10)
 
     # ---------------- VEHICULO ----------------
     def vehiculo(self):
@@ -162,3 +163,15 @@ class App:
     def bitacora(self):
         txt = "".join(self.sistema.ver_bitacora())
         messagebox.showinfo("Bitácora", txt)
+
+    def cerrar_sesion(self):
+        if self.sistema.usuario_actual:
+            self.sistema.log("Cierre de sesion")
+
+        self.usuario = None
+        self.rol = None
+        self.sistema.usuario_actual = None
+
+        messagebox.showinfo("Sesión", "Sesión cerrada correctamente")
+        self.login_view()
+    

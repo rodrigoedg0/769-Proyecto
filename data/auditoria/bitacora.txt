@@ -25,3 +25,10 @@
 [21:13] john -> Registro vehiculo: C562GFD
 [21:13] john -> Entrada: C562GFD
 [21:14] john -> Salida: C562GFD - Q10.0
+[21:19] rocio -> Inicio de sesion
+[07:42] rocio -> Inicio de sesion
+[07:42] rocio -> Registro vehiculo: P495FRT
+[07:42] rocio -> Entrada: P495FRT
+[07:43] rocio -> Cierre de sesion
+[07:43] rocio -> Inicio de sesion
+[07:43] rocio -> Salida: P495FRT - Q10.0
