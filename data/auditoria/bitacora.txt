@@ -1,2 +1,27 @@
 [20:09] Sistema -> Usuario creado: rodro
 [20:16] rodro -> Entrada PASDFSAD
+[21:00] rocio -> Inicio de sesión
+[21:00] rocio -> Registró vehículo: P963RTF
+[21:00] rocio -> Entrada: P963RTF
+[21:01] rocio -> Registró vehículo: M852LOP
+[21:01] rocio -> Entrada: M852LOP
+[21:01] rocio -> Registró vehículo: M741UJH
+[21:01] rocio -> Entrada: M741UJH
+[21:01] rocio -> Salida: M852LOP - Q10.0
+[21:02] rocio -> Salida: M741UJH - Q10.0
+[21:02] rocio -> Salida: P963RTF - Q10.0
+[21:10] rocio -> Inicio de sesion
+[21:10] rocio -> Registro vehiculo: P879HGT
+[21:10] rocio -> Entrada: P879HGT
+[21:11] rocio -> Registro vehiculo: M123ABC
+[21:11] rocio -> Entrada: M123ABC
+[21:11] rocio -> Salida: M123ABC - Q10.0
+[21:11] rocio -> Salida: P879HGT - Q10.0
+[21:12] rodro -> Inicio de sesion
+[21:12] rodro -> Registro vehiculo: C987BVG
+[21:12] rodro -> Entrada: C987BVG
+[21:13] rodro -> Salida: C987BVG - Q10.0
+[21:13] john -> Inicio de sesion
+[21:13] john -> Registro vehiculo: C562GFD
+[21:13] john -> Entrada: C562GFD
+[21:14] john -> Salida: C562GFD - Q10.0

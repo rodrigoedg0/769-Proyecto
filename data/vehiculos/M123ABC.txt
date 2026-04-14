@@ -1,0 +1,2 @@
+Placa:M123ABC
+Tipo:moto

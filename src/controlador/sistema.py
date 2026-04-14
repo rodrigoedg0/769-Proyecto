@@ -45,12 +45,13 @@ class Sistema:
             f.write(f"tarifa_hora={nueva}\n")
 
     # -------------------------
-    # LOG
+    # BITACORA
     # -------------------------
     def log(self, mensaje):
         with open("data/auditoria/bitacora.txt", "a") as f:
             hora = datetime.now().strftime("%H:%M")
-            f.write(f"[{hora}] {self.usuario_actual} -> {mensaje}\n")
+            usuario = self.usuario_actual if self.usuario_actual else "Sistema"
+            f.write(f"[{hora}] {usuario} -> {mensaje}\n")
 
     # -------------------------
     # USUARIOS
@@ -67,6 +68,7 @@ class Sistema:
         with open(ruta, "a") as f:
             f.write(Usuario(username, password, rol).to_txt())
 
+        self.log(f"Usuario creado: {username}")
         return "Usuario registrado"
 
     def login(self, username, password):
@@ -80,6 +82,7 @@ class Sistema:
                 u, p, r = linea.strip().split(",")
                 if u == username and p == password:
                     self.usuario_actual = u
+                    self.log("Inicio de sesion")
                     return True, r
         return False, None
 
@@ -99,12 +102,13 @@ class Sistema:
             ruta = f"data/vehiculos/{v.placa}.txt"
 
             if os.path.exists(ruta):
-                return "Vehículo ya existe"
+                return "Vehiculo ya existe"
 
             with open(ruta, "w") as f:
                 f.write(v.to_txt())
 
-            return "Vehículo registrado"
+            self.log(f"Registro vehiculo: {v.placa}")
+            return "Vehiculo registrado"
 
         except ValueError as e:
             return str(e)
@@ -137,6 +141,7 @@ class Sistema:
         with open(ruta, "a") as f:
             f.write(mov.to_txt_entrada())
 
+        self.log(f"Entrada: {placa}")
         return f"Entrada registrada: {placa}"
 
     def registrar_salida(self, placa):
@@ -158,6 +163,7 @@ class Sistema:
 
         self.parqueo.retirar(placa)
 
+        self.log(f"Salida: {placa} - Q{mov.total}")
         return f"Salida registrada. Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
