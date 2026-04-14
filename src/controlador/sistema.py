@@ -5,6 +5,7 @@ from src.modelo.vehiculo import Vehiculo
 from src.modelo.movimiento import Movimiento
 from src.modelo.parqueo import Parqueo
 
+
 class Sistema:
     def __init__(self):
         self.parqueo = Parqueo()
@@ -31,7 +32,7 @@ class Sistema:
         if not os.path.exists(ruta):
             with open(ruta, "w") as f:
                 f.write("tarifa_hora=5\n")
- 
+
     # -------------------------
     # TARIFA
     # -------------------------
@@ -66,7 +67,7 @@ class Sistema:
         with open(ruta, "a") as f:
             f.write(Usuario(username, password, rol).to_txt())
 
-        return "Usuario Registrado"
+        return "Usuario registrado"
 
     def login(self, username, password):
         ruta = "data/configuracion/usuarios.txt"
@@ -93,20 +94,20 @@ class Sistema:
     # VEHICULOS
     # -------------------------
     def registrar_vehiculo(self, placa, tipo):
-        v = Vehiculo(placa, tipo)
+        try:
+            v = Vehiculo(placa, tipo)
+            ruta = f"data/vehiculos/{v.placa}.txt"
 
-        if not v.validar_placa():
-            return "Placa inválida"
+            if os.path.exists(ruta):
+                return "Vehículo ya existe"
 
-        ruta = f"data/vehiculos/{v.placa}.txt"
+            with open(ruta, "w") as f:
+                f.write(v.to_txt())
 
-        if os.path.exists(ruta):
-            return "Vehículo ya existe"
+            return "Vehículo registrado"
 
-        with open(ruta, "w") as f:
-            f.write(v.to_txt())
-
-        return "Vehículo registrado"
+        except ValueError as e:
+            return str(e)
 
     def obtener_vehiculos(self):
         return os.listdir("data/vehiculos")
@@ -115,10 +116,20 @@ class Sistema:
     # MOVIMIENTOS
     # -------------------------
     def registrar_entrada(self, placa):
-        if not self.parqueo.hay_espacio():
-            return "Parqueo Lleno"
+        placa = placa.upper()
+        ruta_vehiculo = f"data/vehiculos/{placa}.txt"
 
-        self.parqueo.ingresar(placa)
+        if not os.path.exists(ruta_vehiculo):
+            return "Vehículo no registrado"
+
+        if placa in self.parqueo.ocupados:
+            return "El vehículo ya está dentro"
+
+        if not self.parqueo.hay_espacio():
+            return "Parqueo lleno"
+
+        if placa not in self.parqueo.ocupados:
+            self.parqueo.ocupados.append(placa)
 
         mov = Movimiento(placa)
         ruta = f"data/movimientos/{placa}_historial.txt"
@@ -126,10 +137,16 @@ class Sistema:
         with open(ruta, "a") as f:
             f.write(mov.to_txt_entrada())
 
-        return "Entrada registrada"
+        return f"Entrada registrada: {placa}"
 
     def registrar_salida(self, placa):
+        placa = placa.upper()
+
+        if placa not in self.parqueo.ocupados:
+            return f"{placa} no está en el parqueo"
+
         tarifa = self.obtener_tarifa()
+
         mov = Movimiento(placa)
         mov.salida = datetime.now()
         mov.total = tarifa
@@ -141,10 +158,9 @@ class Sistema:
 
         self.parqueo.retirar(placa)
 
-        return f"Total a pagar: Q{mov.total}"
+        return f"Salida registrada. Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
-    # Filtrar valores None y convertir todo a una cadena string
         return [str(v) for v in self.parqueo.ocupados if v is not None]
 
     # -------------------------
@@ -159,7 +175,7 @@ class Sistema:
                 datos.append((archivo, len(f.readlines())))
 
         return datos
- 
+
     def ver_bitacora(self):
         ruta = "data/auditoria/bitacora.txt"
         if not os.path.exists(ruta):

@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, simpledialog
+from src.modelo.vehiculo import Vehiculo
+
 
 class App:
     def __init__(self, sistema):
@@ -40,20 +42,26 @@ class App:
 
         if ok:
             self.rol = rol
+            messagebox.showinfo("Login", "Inicio de sesión correcto")
             self.menu()
         else:
-            messagebox.showerror("Error", "Acceso incorrecto")
+            messagebox.showerror("Error", "Login incorrecto")
 
     def registro(self):
         v = tk.Toplevel(self.root)
 
-        u = tk.Entry(v); u.pack()
-        p = tk.Entry(v); p.pack()
-        r = tk.Entry(v); r.pack()
+        u = tk.Entry(v)
+        u.pack()
+
+        p = tk.Entry(v)
+        p.pack()
+
+        r = tk.Entry(v)
+        r.pack()
 
         def guardar():
-            messagebox.showinfo("Info",
-                self.sistema.registrar_usuario(u.get(), p.get(), r.get()))
+            mensaje = self.sistema.registrar_usuario(u.get(), p.get(), r.get())
+            messagebox.showinfo("Info", mensaje)
             v.destroy()
 
         tk.Button(v, text="Guardar", command=guardar).pack()
@@ -63,7 +71,6 @@ class App:
         self.clear()
 
         tk.Button(self.root, text="Vehículo", command=self.vehiculo).pack()
-        tk.Button(self.root, text="Entrada", command=self.entrada).pack()
         tk.Button(self.root, text="Salida", command=self.salida).pack()
         tk.Button(self.root, text="Ver Usuarios", command=self.ver_usuarios).pack()
         tk.Button(self.root, text="Ver Vehículos", command=self.ver_vehiculos).pack()
@@ -72,23 +79,62 @@ class App:
         tk.Button(self.root, text="Reportes", command=self.reportes).pack()
         tk.Button(self.root, text="Bitácora", command=self.bitacora).pack()
 
-    # ---------------- FUNCIONES ----------------
+    # ---------------- VEHICULO ----------------
     def vehiculo(self):
-        placa = simpledialog.askstring("Placa", "Placa:")
-        tipo = simpledialog.askstring("Tipo", "Tipo:")
-        messagebox.showinfo("Info",
-            self.sistema.registrar_vehiculo(placa, tipo))
+        ventana = tk.Toplevel(self.root)
+        ventana.title("Registrar Vehículo")
+        ventana.geometry("300x200")
 
-    def entrada(self):
-        placa = simpledialog.askstring("Entrada", "Placa:")
-        messagebox.showinfo("Info",
-            self.sistema.registrar_entrada(placa))
+        tk.Label(ventana, text="Placa:").pack()
+        entrada_placa = tk.Entry(ventana)
+        entrada_placa.pack()
 
+        tk.Label(ventana, text="Tipo de vehículo:").pack()
+        entrada_tipo = tk.Entry(ventana)
+        entrada_tipo.pack()
+
+        def mayuscula(event):
+            texto = entrada_placa.get().upper()
+            entrada_placa.delete(0, tk.END)
+            entrada_placa.insert(0, texto)
+
+        entrada_placa.bind("<KeyRelease>", mayuscula)
+
+        def registrar():
+            placa = entrada_placa.get().upper()
+            tipo = entrada_tipo.get()
+
+            if not placa or not tipo:
+                messagebox.showerror("Error", "Todos los campos son obligatorios")
+                return
+
+            try:
+                Vehiculo(placa, tipo)
+            except ValueError as e:
+                messagebox.showerror("Error", str(e))
+                return
+
+            resultado = self.sistema.registrar_vehiculo(placa, tipo)
+            entrada = self.sistema.registrar_entrada(placa)
+
+            messagebox.showinfo("Resultado", f"{resultado}\n{entrada}")
+            ventana.destroy()
+
+        tk.Button(ventana, text="Registrar entrada", command=registrar).pack(pady=5)
+        tk.Button(ventana, text="Salir", command=ventana.destroy).pack(pady=5)
+
+    # ---------------- SALIDA ----------------
     def salida(self):
-        placa = simpledialog.askstring("Salida", "Placa:")
-        messagebox.showinfo("Info",
-            self.sistema.registrar_salida(placa))
+        placa = simpledialog.askstring("Salida", "Ingrese la placa:")
 
+        if not placa:
+            return
+
+        placa = placa.upper()
+        resultado = self.sistema.registrar_salida(placa)
+        messagebox.showinfo("Salida", resultado)
+
+    # ---------------- OTROS ----------------
     def ver_usuarios(self):
         if self.rol != "admin":
             messagebox.showerror("Error", "Solo admin")
@@ -106,12 +152,11 @@ class App:
         messagebox.showinfo("Activos", data)
 
     def tarifa(self):
-        messagebox.showinfo("Tarifa",
-            f"Q{self.sistema.obtener_tarifa()}")
+        messagebox.showinfo("Tarifa", f"Q{self.sistema.obtener_tarifa()}")
 
     def reportes(self):
         datos = self.sistema.reporte_movimientos()
-        txt = "\n".join([f"{a}: {c}" for a,c in datos])
+        txt = "\n".join([f"{a}: {c}" for a, c in datos])
         messagebox.showinfo("Reportes", txt)
 
     def bitacora(self):
