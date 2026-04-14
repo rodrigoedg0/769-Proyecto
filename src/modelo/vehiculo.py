@@ -7,10 +7,10 @@ class Vehiculo:
         self.validar_placa()
 
     def validar_placa(self):
-        patron = r'^[PMC][0-9]{3}[A-Z]{3}$'
+        patron = r'^[PMCAUE][0-9]{3}[A-Z]{3}$'
         
         if not re.match(patron, self.placa):
-            raise ValueError("Placa inválida o de otro país no válida")
+            raise ValueError("Placa inválida")
         
         return True
 

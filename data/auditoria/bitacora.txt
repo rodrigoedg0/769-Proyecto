@@ -32,3 +32,8 @@
 [07:43] rocio -> Cierre de sesion
 [07:43] rocio -> Inicio de sesion
 [07:43] rocio -> Salida: P495FRT - Q10.0
+[07:51] rocio -> Inicio de sesion
+[07:52] rocio -> Registro vehiculo: A874THY
+[07:52] rocio -> Entrada: A874THY
+[07:52] rocio -> Salida: A874THY - Q10.0
+[07:52] rocio -> Cierre de sesion
