@@ -49,37 +49,54 @@ class App:
 
     def registro(self):
         v = tk.Toplevel(self.root)
+        label_titulo = tk.Label(v, text="Creacion de usuario")
+        label_titulo.grid(row=0, column=0, columnspan=2)
 
+        label_nombre = tk.Label(v, text="nombre")
+        label_nombre.grid(row=1, column=0)
         u = tk.Entry(v)
-        u.pack()
+        u.grid(row=1, column=1)
 
+        label_password = tk.Label(v, text="contrasenia")
+        label_password.grid(row=2, column=0)
         p = tk.Entry(v)
-        p.pack()
+        p.grid(row=2, column=1)
 
+        label_rol = tk.Label(v, text="usuario/admin")
+        label_rol.grid(row=3, column=0)
         r = tk.Entry(v)
-        r.pack()
+        r.grid(row=3, column=1)
 
         def guardar():
             mensaje = self.sistema.registrar_usuario(u.get(), p.get(), r.get())
             messagebox.showinfo("Info", mensaje)
             v.destroy()
 
-        tk.Button(v, text="Guardar", command=guardar).pack()
+        tk.Button(v, text="Guardar", command=guardar).grid(row=4, columnspan=2)
+        
 
     # ---------------- MENU ----------------
     def menu(self):
         self.clear()
 
-        tk.Button(self.root, text="Vehículo", command=self.vehiculo).pack()
-        tk.Button(self.root, text="Salida", command=self.salida).pack()
-        tk.Button(self.root, text="Ver Usuarios", command=self.ver_usuarios).pack()
-        tk.Button(self.root, text="Ver Vehículos", command=self.ver_vehiculos).pack()
-        tk.Button(self.root, text="Activos", command=self.activos).pack()
-        tk.Button(self.root, text="Tarifa", command=self.tarifa).pack()
-        tk.Button(self.root, text="Reportes", command=self.reportes).pack()
-        tk.Button(self.root, text="Bitácora", command=self.bitacora).pack()
-        tk.Button(self.root, text="Cerrar sesión", command=self.cerrar_sesion).pack(pady=10)
-
+        btn1=tk.Button(self.root, text="Vehículo", command=self.vehiculo).pack()
+        btn2=tk.Button(self.root, text="Salida", command=self.salida).pack()
+        btn3=tk.Button(self.root, text="Activos", command=self.activos).pack()
+        btn4=tk.Button(self.root, text="Tarifa", command=self.tarifa).pack()
+        
+        btn5=tk.Button(self.root, text="Ver Usuarios", command=self.ver_usuarios)
+        btn6=tk.Button(self.root, text="Ver Vehículos", command=self.ver_vehiculos)
+        btn7=tk.Button(self.root, text="Bitácora", command=self.bitacora)
+        btn8=tk.Button(self.root, text="Reportes", command=self.reportes)
+        
+        if self.rol == "admin":
+           btn5.pack()
+           btn6.pack()
+           btn7.pack()
+           btn8.pack()
+           
+        btn9=tk.Button(self.root, text="Cerrar sesión", command=self.cerrar_sesion).pack(pady=10)
+           
     # ---------------- VEHICULO ----------------
     def vehiculo(self):
         ventana = tk.Toplevel(self.root)

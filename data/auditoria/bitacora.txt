@@ -37,3 +37,20 @@
 [07:52] rocio -> Entrada: A874THY
 [07:52] rocio -> Salida: A874THY - Q10.0
 [07:52] rocio -> Cierre de sesion
+[23:04] john -> Inicio de sesion
+[12:36] Sistema -> Usuario creado: rebeca
+[12:36] rebeca -> Inicio de sesion
+[12:36] rebeca -> Cierre de sesion
+[12:55] rebeca -> Inicio de sesion
+[12:57] rebeca -> Inicio de sesion
+[13:07] rebeca -> Inicio de sesion
+[13:07] rebeca -> Cierre de sesion
+[13:08] john -> Inicio de sesion
+[13:08] john -> Inicio de sesion
+[13:14] rebeca -> Inicio de sesion
+[13:14] rebeca -> Cierre de sesion
+[13:15] rebeca -> Inicio de sesion
+[13:16] rebeca -> Inicio de sesion
+[13:16] rebeca -> Cierre de sesion
+[13:16] john -> Inicio de sesion
+[13:17] john -> Inicio de sesion
