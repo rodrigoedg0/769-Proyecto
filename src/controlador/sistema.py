@@ -56,9 +56,15 @@ class Sistema:
     # -------------------------
     # USUARIOS
     # -------------------------
-    def registrar_usuario(self, username, password, rol):
+    def registrar_usuario(self, username, password, confirmacion, rol):
         ruta = "data/configuracion/usuarios.txt"
 
+        if username=="" or password=="" or confirmacion=="" or rol=="":
+            return "verifique sus datos"
+        
+        if password!=confirmacion:
+            return "verifique su contraseña"
+        
         if os.path.exists(ruta):
             with open(ruta, "r") as f:
                 for linea in f:

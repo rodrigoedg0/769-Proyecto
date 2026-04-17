@@ -55,51 +55,69 @@ class App:
         label_titulo = tk.Label(v, text="Creacion de usuario")
         label_titulo.grid(row=0, column=0, columnspan=2)
 
-        label_nombre = tk.Label(v, text="nombre")
+        label_nombre = tk.Label(v, text="Nombre")
         label_nombre.grid(row=1, column=0)
         u = tk.Entry(v)
         u.grid(row=1, column=1)
-
-        label_password = tk.Label(v, text="contraseña")
-        label_password.grid(row=2, column=0)
-        p = tk.Entry(v)
-        p.grid(row=2, column=1)
-
+        
         label_rol = tk.Label(v, text="usuario/admin")
-        label_rol.grid(row=3, column=0)
+        label_rol.grid(row=2, column=0)
         r = tk.Entry(v)
-        r.grid(row=3, column=1)
+        r.grid(row=2, column=1)
+
+        label_password = tk.Label(v, text="Contraseña")
+        label_password.grid(row=3, column=0)
+        p = tk.Entry(v)
+        p.grid(row=3, column=1)
+        
+        label_confirmacion = tk.Label(v, text="Confirmacion")
+        label_confirmacion.grid(row=4, column=0)
+        c = tk.Entry(v)
+        c.grid(row=4, column=1)
+
 
         def guardar():
+            label_informacion.config(text="")
+            c.config(background="white")
             if r.get() == "admin":
-                if self.sistema.Es_admin(simpledialog.askstring("Contraseña", "Ingrese la contraseña de admin:")) == False:
-                    return messagebox.showerror("no valido", "ha ingresado una contraseña no valida")
-            mensaje = self.sistema.registrar_usuario(u.get(), p.get(), r.get())
-            messagebox.showinfo("Info", mensaje)
-            self.login_view()           
+                val = self.sistema.Es_admin(simpledialog.askstring("Contraseña", "Ingrese la contraseña de admin:"))
+                if  val == False:
+                    label_informacion.config(text="ha ingresado una contraseña de admin no valida")
+                    return
+                
+            mensaje = self.sistema.registrar_usuario(u.get(), p.get(), c.get(), r.get())
+            label_informacion.config(text=mensaje)
+            
+            if mensaje =="verifique su contraseña":
+                c.config(background="#FFAEA8")
+                return
+            elif mensaje=="verifique sus datos":
+                return
+            else: 
+                messagebox.showinfo("Info", mensaje)
+                self.login_view()           
 
-        tk.Button(v, text="Guardar", command=guardar).grid(row=4, columnspan=2)
+        tk.Button(v, text="Guardar", command=guardar).grid(row=5, columnspan=2)
+        label_informacion = tk.Label(v, font=("arial", 8, "italic"))
+        label_informacion.grid(row=6, columnspan=2)
         
 
     # ---------------- MENU ----------------
     def menu(self):
         self.clear()
-
-        btn1=tk.Button(self.root, text="Vehículo", command=self.vehiculo).pack()
-        btn2=tk.Button(self.root, text="Salida", command=self.salida).pack()
-        btn3=tk.Button(self.root, text="Activos", command=self.activos).pack()
-        btn4=tk.Button(self.root, text="Tarifa", command=self.tarifa).pack()
-        
-        btn5=tk.Button(self.root, text="Ver Usuarios", command=self.ver_usuarios)
-        btn6=tk.Button(self.root, text="Ver Vehículos", command=self.ver_vehiculos)
-        btn7=tk.Button(self.root, text="Bitácora", command=self.bitacora)
-        btn8=tk.Button(self.root, text="Reportes", command=self.reportes)
+        botones_usuario= tk.Frame().pack()
+        btn1=tk.Button(botones_usuario, text="Vehículo", command=self.vehiculo).pack()
+        btn2=tk.Button(botones_usuario, text="Salida", command=self.salida).pack()
+        btn3=tk.Button(botones_usuario, text="Activos", command=self.activos).pack()
+        btn4=tk.Button(botones_usuario, text="Tarifa", command=self.tarifa).pack()
+        botones_admin= tk.Frame()
+        btn5=tk.Button(botones_admin, text="Ver Usuarios", command=self.ver_usuarios).pack()
+        btn6=tk.Button(botones_admin, text="Ver Vehículos", command=self.ver_vehiculos).pack()
+        btn7=tk.Button(botones_admin, text="Bitácora", command=self.bitacora).pack()
+        btn8=tk.Button(botones_admin, text="Reportes", command=self.reportes).pack()
         
         if self.rol == "admin":
-           btn5.pack()
-           btn6.pack()
-           btn7.pack()
-           btn8.pack()
+           botones_admin.pack()
            
         btn9=tk.Button(self.root, text="Cerrar sesión", command=self.cerrar_sesion).pack(pady=10)
            

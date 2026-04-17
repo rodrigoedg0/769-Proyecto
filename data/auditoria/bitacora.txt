@@ -60,3 +60,14 @@
 [23:37] john -> Cierre de sesion
 [23:43] Sistema -> Usuario creado: yon
 [23:54] Sistema -> Usuario creado: ricardogrande
+[08:24] john -> Inicio de sesion
+[08:24] john -> Cierre de sesion
+[08:54] Sistema -> Usuario creado: 
+[09:06] Sistema -> Usuario creado: 
+[09:09] Sistema -> Usuario creado: ariana
+[09:11] Sistema -> Usuario creado: maria
+[09:45] Sistema -> Usuario creado: tania
+[10:04] john -> Inicio de sesion
+[10:04] john -> Cierre de sesion
+[10:04] rodro -> Inicio de sesion
+[10:05] rodro -> Cierre de sesion

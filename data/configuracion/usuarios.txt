@@ -1,6 +1,8 @@
 rodrigo,12345678,admin
-rodro,12345,admin
-john,1234567890,admin
+rodro,12345,user
+john,bajo1,admin
 rocio,882088,admin
 rebeca,123,usuario
 johana,321,usuario
+ariana,tigre,usuario
+tania,123,usuario
