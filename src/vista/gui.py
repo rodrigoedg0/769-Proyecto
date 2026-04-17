@@ -48,7 +48,10 @@ class App:
             messagebox.showerror("Error", "Login incorrecto")
 
     def registro(self):
-        v = tk.Toplevel(self.root)
+        self.clear()
+        v = tk.Frame(self.root)
+        v.pack() 
+        
         label_titulo = tk.Label(v, text="Creacion de usuario")
         label_titulo.grid(row=0, column=0, columnspan=2)
 
@@ -57,7 +60,7 @@ class App:
         u = tk.Entry(v)
         u.grid(row=1, column=1)
 
-        label_password = tk.Label(v, text="contrasenia")
+        label_password = tk.Label(v, text="contraseña")
         label_password.grid(row=2, column=0)
         p = tk.Entry(v)
         p.grid(row=2, column=1)
@@ -68,9 +71,12 @@ class App:
         r.grid(row=3, column=1)
 
         def guardar():
+            if r.get() == "admin":
+                if self.sistema.Es_admin(simpledialog.askstring("Contraseña", "Ingrese la contraseña de admin:")) == False:
+                    return messagebox.showerror("no valido", "ha ingresado una contraseña no valida")
             mensaje = self.sistema.registrar_usuario(u.get(), p.get(), r.get())
             messagebox.showinfo("Info", mensaje)
-            v.destroy()
+            self.login_view()           
 
         tk.Button(v, text="Guardar", command=guardar).grid(row=4, columnspan=2)
         

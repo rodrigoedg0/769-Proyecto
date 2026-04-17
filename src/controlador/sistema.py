@@ -85,6 +85,13 @@ class Sistema:
                     self.log("Inicio de sesion")
                     return True, r
         return False, None
+    
+    def Es_admin(self, contra):
+        with open("data/configuracion/contra_admin.txt", "r") as f:
+            if (f.readline()) == contra:
+                return True
+            else:
+                return False
 
     def obtener_usuarios(self):
         ruta = "data/configuracion/usuarios.txt"

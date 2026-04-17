@@ -3,3 +3,4 @@ rodro,12345,admin
 john,1234567890,admin
 rocio,882088,admin
 rebeca,123,usuario
+johana,321,usuario

@@ -54,3 +54,9 @@
 [13:16] rebeca -> Cierre de sesion
 [13:16] john -> Inicio de sesion
 [13:17] john -> Inicio de sesion
+[21:33] Sistema -> Usuario creado: johana
+[23:33] Sistema -> Usuario creado: nadia
+[23:37] john -> Inicio de sesion
+[23:37] john -> Cierre de sesion
+[23:43] Sistema -> Usuario creado: yon
+[23:54] Sistema -> Usuario creado: ricardogrande
