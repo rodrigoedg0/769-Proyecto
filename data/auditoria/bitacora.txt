@@ -68,3 +68,8 @@
 [09:11] Sistema -> Usuario creado: maria
 [09:45] Sistema -> Usuario creado: tania
 
+[02:12] j -> Inicio de sesion
+[02:12] j -> Cierre de sesion
+[03:25] j -> Inicio de sesion
+[03:26] j -> Registro vehiculo: P234EYT
+[03:26] j -> Entrada: P234EYT

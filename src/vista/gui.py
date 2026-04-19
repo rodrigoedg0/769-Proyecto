@@ -30,16 +30,22 @@ class App:
         frame_login.config(bg="#093059")
         frame_login.pack(expand=True)
         
-        tk.Label(frame_login, text="LOGIN").pack()
+        bienvenida= tk.Label(frame_login, text="Sistema de Parqueo \nBienvenidos")
+        bienvenida.config(font=("arial", 12, "bold"), bg="#093059", fg="#FFFFFF")
+        bienvenida.grid(row=0, columnspan=2, pady=10)
 
+        lbl_user= tk.Label(frame_login, text="Usuario", bg="#093059", fg="#FFFFFF")
+        lbl_user.grid(row=1, column=0)
         self.u = tk.Entry(frame_login)
-        self.u.pack()
+        self.u.grid(row=1, column=1)
 
+        lbl_pass= tk.Label(frame_login, text="Contraseña", bg="#093059", fg="#FFFFFF")
+        lbl_pass.grid(row=2, column=0)
         self.p = tk.Entry(frame_login, show="*")
-        self.p.pack()
+        self.p.grid(row=2, column=1)
 
-        tk.Button(frame_login, text="Login", command=self.login).pack()
-        tk.Button(frame_login, text="Registrar", command=self.registro).pack()
+        tk.Button(frame_login, text="Acceder", command=self.login).grid(row=3, columnspan=2, pady=5)
+        tk.Button(frame_login, text="Crear una cuenta", command=self.registro).grid(row=4, columnspan=2, pady=10)
 
     def login(self):
         ok, rol = self.sistema.login(self.u.get(), self.p.get())
@@ -58,29 +64,28 @@ class App:
         v.config(bg="#093059")
         v.pack(expand=True)
         
-        label_titulo = tk.Label(v, text="Creacion de usuario")
-        label_titulo.grid(row=0, column=0, columnspan=2)
+        label_titulo = tk.Label(v, text="Creacion de usuario", bg="#093059", fg="#FFFFFF", font=("arial", 12, "bold"))
+        label_titulo.grid(row=0, column=0, columnspan=2, pady=10)
 
-        label_nombre = tk.Label(v, text="Nombre")
+        label_nombre = tk.Label(v, text="Nombre", bg="#093059", fg="#FFFFFF")
         label_nombre.grid(row=1, column=0)
         u = tk.Entry(v)
         u.grid(row=1, column=1)
         
-        label_rol = tk.Label(v, text="usuario/admin")
+        label_rol = tk.Label(v, text="usuario/admin", bg="#093059", fg="#FFFFFF")
         label_rol.grid(row=2, column=0)
         r = tk.Entry(v)
         r.grid(row=2, column=1)
 
-        label_password = tk.Label(v, text="Contraseña")
+        label_password = tk.Label(v, text="Contraseña", bg="#093059", fg="#FFFFFF")
         label_password.grid(row=3, column=0)
         p = tk.Entry(v)
         p.grid(row=3, column=1)
         
-        label_confirmacion = tk.Label(v, text="Confirmacion")
+        label_confirmacion = tk.Label(v, text="Confirmacion", bg="#093059", fg="#FFFFFF")
         label_confirmacion.grid(row=4, column=0)
         c = tk.Entry(v)
         c.grid(row=4, column=1)
-
 
         def guardar():
             label_informacion.config(text="")
@@ -103,10 +108,10 @@ class App:
                 messagebox.showinfo("Info", mensaje)
                 self.login_view()           
 
-        tk.Button(v, text="Guardar", command=guardar).grid(row=5, columnspan=2)
-        label_informacion = tk.Label(v, font=("arial", 8, "italic"))
+        tk.Button(v, text="Guardar", command=guardar).grid(row=5, columnspan=2, pady=5)
+        label_informacion = tk.Label(v, font=("arial", 8, "italic"), bg="#093059", fg="#FFFFFF")
         label_informacion.grid(row=6, columnspan=2)
-        
+        tk.Button(v, text="volver", command=self.login_view). grid(row=7, columnspan=2, pady=10)
 
     # ---------------- MENU ----------------
     def menu(self):
