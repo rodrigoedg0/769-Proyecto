@@ -8,7 +8,8 @@ class App:
         self.sistema = sistema
         self.root = tk.Tk()
         self.root.title("Sistema Parqueo")
-        self.root.geometry("400x500")
+        self.root.geometry("600x400")
+        self.root.config(bg="#093059")
 
         self.usuario = None
         self.rol = None
@@ -25,32 +26,37 @@ class App:
     # ---------------- LOGIN ----------------
     def login_view(self):
         self.clear()
+        frame_login= tk.Frame(self.root)
+        frame_login.config(bg="#093059")
+        frame_login.pack(expand=True)
+        
+        tk.Label(frame_login, text="LOGIN").pack()
 
-        tk.Label(self.root, text="LOGIN").pack()
-
-        self.u = tk.Entry(self.root)
+        self.u = tk.Entry(frame_login)
         self.u.pack()
 
-        self.p = tk.Entry(self.root, show="*")
+        self.p = tk.Entry(frame_login, show="*")
         self.p.pack()
 
-        tk.Button(self.root, text="Login", command=self.login).pack()
-        tk.Button(self.root, text="Registrar", command=self.registro).pack()
+        tk.Button(frame_login, text="Login", command=self.login).pack()
+        tk.Button(frame_login, text="Registrar", command=self.registro).pack()
 
     def login(self):
         ok, rol = self.sistema.login(self.u.get(), self.p.get())
 
         if ok:
             self.rol = rol
-            messagebox.showinfo("Login", "Inicio de sesión correcto")
             self.menu()
+            self.activos()
         else:
             messagebox.showerror("Error", "Login incorrecto")
 
     def registro(self):
         self.clear()
+        
         v = tk.Frame(self.root)
-        v.pack() 
+        v.config(bg="#093059")
+        v.pack(expand=True)
         
         label_titulo = tk.Label(v, text="Creacion de usuario")
         label_titulo.grid(row=0, column=0, columnspan=2)
@@ -105,34 +111,51 @@ class App:
     # ---------------- MENU ----------------
     def menu(self):
         self.clear()
-        botones_usuario= tk.Frame().pack()
-        btn1=tk.Button(botones_usuario, text="Vehículo", command=self.vehiculo).pack()
-        btn2=tk.Button(botones_usuario, text="Salida", command=self.salida).pack()
-        btn3=tk.Button(botones_usuario, text="Activos", command=self.activos).pack()
-        btn4=tk.Button(botones_usuario, text="Tarifa", command=self.tarifa).pack()
-        botones_admin= tk.Frame()
-        btn5=tk.Button(botones_admin, text="Ver Usuarios", command=self.ver_usuarios).pack()
-        btn6=tk.Button(botones_admin, text="Ver Vehículos", command=self.ver_vehiculos).pack()
-        btn7=tk.Button(botones_admin, text="Bitácora", command=self.bitacora).pack()
-        btn8=tk.Button(botones_admin, text="Reportes", command=self.reportes).pack()
+        
+        self.frame_principal = tk.Frame(bg="#093059")
+        self.frame_principal.place(relwidth=0.8, relheight=1, relx=0)
+        frame_menu = tk.Frame(bg="#093059")
+        frame_menu.place(relwidth=0.2, relheight=1, relx=0.8)
+        
+        botones_usuario= tk.Frame(frame_menu, bg="#093059")
+        botones_usuario.pack(fill="x")
+        btn1=tk.Button(botones_usuario, text="cerrar sesion", command=self.cerrar_sesion).pack(fill="x", expand=True)
+        btn2=tk.Button(botones_usuario, text="vehiculos activos", command=self.activos).pack(fill="x", expand=True)
+        btn3=tk.Button(botones_usuario, text="Tarifa", command=self.tarifa).pack(fill="x", expand=True)
+        botones_admin= tk.Frame(frame_menu, bg="#093059")
+        btn4=tk.Button(botones_admin, text="Ver Usuarios", command=self.ver_usuarios).pack(fill="x", expand=True)
+        btn5=tk.Button(botones_admin, text="Ver Vehículos", command=self.ver_vehiculos).pack(fill="x", expand=True)
+        btn6=tk.Button(botones_admin, text="Bitácora", command=self.bitacora).pack(fill="x", expand=True)
+        btn7=tk.Button(botones_admin, text="Reportes", command=self.reportes).pack(fill="x", expand=True)
         
         if self.rol == "admin":
-           botones_admin.pack()
+           botones_admin.pack(fill="x")
            
-        btn9=tk.Button(self.root, text="Cerrar sesión", command=self.cerrar_sesion).pack(pady=10)
-           
-    # ---------------- VEHICULO ----------------
+    # ---------------- ACTIVOS ----------------
+    def activos(self):
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
+        tk.Button(self.frame_principal, text="agregar vehiculo", command=self.vehiculo).pack()
+        
+        if self.sistema.vehiculos_activos() != None:
+            for placa in self.sistema.vehiculos_activos():
+                ruta = f"data/vehiculos/{placa}.txt"
+                with open(ruta, "r") as f:
+                    contenido = f.read()
+                tk.Label(self.frame_principal, text=contenido).pack(pady=(5,0))
+                tk.Button(self.frame_principal, text="Salida", command=lambda:self.salida(placa)).pack()
+                
     def vehiculo(self):
-        ventana = tk.Toplevel(self.root)
-        ventana.title("Registrar Vehículo")
-        ventana.geometry("300x200")
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
 
-        tk.Label(ventana, text="Placa:").pack()
-        entrada_placa = tk.Entry(ventana)
+        tk.Label(self.frame_principal, text="Placa:").pack()
+        entrada_placa = tk.Entry(self.frame_principal)
         entrada_placa.pack()
 
-        tk.Label(ventana, text="Tipo de vehículo:").pack()
-        entrada_tipo = tk.Entry(ventana)
+        tk.Label(self.frame_principal, text="Tipo de vehículo:").pack()
+        entrada_tipo = tk.Entry(self.frame_principal)
         entrada_tipo.pack()
 
         def mayuscula(event):
@@ -160,50 +183,57 @@ class App:
             entrada = self.sistema.registrar_entrada(placa)
 
             messagebox.showinfo("Resultado", f"{resultado}\n{entrada}")
-            ventana.destroy()
+            self.activos()
 
-        tk.Button(ventana, text="Registrar entrada", command=registrar).pack(pady=5)
-        tk.Button(ventana, text="Salir", command=ventana.destroy).pack(pady=5)
+        tk.Button(self.frame_principal, text="Registrar entrada", command=registrar).pack(pady=5)
 
     # ---------------- SALIDA ----------------
-    def salida(self):
-        placa = simpledialog.askstring("Salida", "Ingrese la placa:")
-
+    def salida(self, placa_a_salir):
+        placa = placa_a_salir
         if not placa:
             return
 
         placa = placa.upper()
         resultado = self.sistema.registrar_salida(placa)
         messagebox.showinfo("Salida", resultado)
+        self.activos()
 
     # ---------------- OTROS ----------------
+    def tarifa(self):
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
+        contenido= f"La tarifa actual es de Q{self.sistema.obtener_tarifa()}"
+        tk.Label(self.frame_principal, text=contenido, bg="#093059", fg="#FFFFFF").pack(fill="x", expand=True)
+        
     def ver_usuarios(self):
-        if self.rol != "admin":
-            messagebox.showerror("Error", "Solo admin")
-            return
-
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
         data = "".join(self.sistema.obtener_usuarios())
-        messagebox.showinfo("Usuarios", data)
+        tk.Label(self.frame_principal, text=data, bg="#093059", fg="#FFFFFF").pack(fill="x", expand=True)
 
     def ver_vehiculos(self):
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
         data = "\n".join(self.sistema.obtener_vehiculos())
-        messagebox.showinfo("Vehículos", data)
-
-    def activos(self):
-        data = "\n".join(self.sistema.vehiculos_activos())
-        messagebox.showinfo("Activos", data)
-
-    def tarifa(self):
-        messagebox.showinfo("Tarifa", f"Q{self.sistema.obtener_tarifa()}")
-
+        tk.Label(self.frame_principal, text=data, bg="#093059", fg="#FFFFFF").pack(fill="x", expand=True)
+        
+    def bitacora(self):
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
+        txt = "".join(self.sistema.ver_bitacora())
+        tk.Label(self.frame_principal, text=txt, bg="#093059", fg="#FFFFFF").pack(fill="x", expand=True)
+        
     def reportes(self):
+        for widget in self.frame_principal.winfo_children():
+            widget.destroy()
+            
         datos = self.sistema.reporte_movimientos()
         txt = "\n".join([f"{a}: {c}" for a, c in datos])
-        messagebox.showinfo("Reportes", txt)
-
-    def bitacora(self):
-        txt = "".join(self.sistema.ver_bitacora())
-        messagebox.showinfo("Bitácora", txt)
+        tk.Label(self.frame_principal, text=txt, bg="#093059", fg="#FFFFFF").pack(fill="x", expand=True)
 
     def cerrar_sesion(self):
         if self.sistema.usuario_actual:

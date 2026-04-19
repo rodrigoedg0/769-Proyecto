@@ -67,7 +67,4 @@
 [09:09] Sistema -> Usuario creado: ariana
 [09:11] Sistema -> Usuario creado: maria
 [09:45] Sistema -> Usuario creado: tania
-[10:04] john -> Inicio de sesion
-[10:04] john -> Cierre de sesion
-[10:04] rodro -> Inicio de sesion
-[10:05] rodro -> Cierre de sesion
+

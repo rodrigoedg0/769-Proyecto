@@ -4,5 +4,6 @@ john,bajo1,admin
 rocio,882088,admin
 rebeca,123,usuario
 johana,321,usuario
-ariana,tigre,usuario
+ariana,tigre12,usuario
 tania,123,usuario
+j,o,admin

@@ -180,7 +180,7 @@ class Sistema:
         return f"Salida registrada. Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
-        return [str(v) for v in self.parqueo.ocupados if v is not None]
+        return self.parqueo.ocupados
 
     # -------------------------
     # REPORTES
