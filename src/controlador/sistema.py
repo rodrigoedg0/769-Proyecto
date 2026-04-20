@@ -1,6 +1,8 @@
 import os
+import base64
+import hashlib
+import secrets
 from datetime import datetime, timedelta
-from src.modelo.usuario import Usuario
 from src.modelo.vehiculo import Vehiculo
 from src.modelo.movimiento import Movimiento
 from src.modelo.parqueo import Parqueo
@@ -38,6 +40,73 @@ class Sistema:
         if not os.path.exists(ruta):
             with open(ruta, "w") as f:
                 f.write("tarifa_hora=5\n")
+        self._inicializar_cifrado_usuarios()
+        self._migrar_usuarios_a_cifrado()
+
+    def _inicializar_cifrado_usuarios(self):
+        self.ruta_key_usuarios = "data/configuracion/usuarios.key"
+        if not os.path.exists(self.ruta_key_usuarios):
+            with open(self.ruta_key_usuarios, "w", encoding="utf-8") as f:
+                f.write(secrets.token_hex(32))
+
+        with open(self.ruta_key_usuarios, "r", encoding="utf-8") as f:
+            self._key_usuarios = f.read().strip()
+
+    def _derivar_llave(self):
+        return hashlib.sha256(self._key_usuarios.encode("utf-8")).digest()
+
+    def _cifrar_linea_usuario(self, texto):
+        datos = texto.encode("utf-8")
+        llave = self._derivar_llave()
+        cifrado = bytes(b ^ llave[i % len(llave)] for i, b in enumerate(datos))
+        token = base64.urlsafe_b64encode(cifrado).decode("ascii")
+        return f"ENC:{token}\n"
+
+    def _descifrar_linea_usuario(self, linea):
+        linea = linea.strip()
+        if not linea:
+            return ""
+        if not linea.startswith("ENC:"):
+            return linea
+        token = linea[4:]
+        try:
+            cifrado = base64.urlsafe_b64decode(token.encode("ascii"))
+            llave = self._derivar_llave()
+            datos = bytes(b ^ llave[i % len(llave)] for i, b in enumerate(cifrado))
+            return datos.decode("utf-8")
+        except Exception:
+            return ""
+
+    def _cargar_usuarios(self):
+        ruta = "data/configuracion/usuarios.txt"
+        usuarios = []
+        if not os.path.exists(ruta):
+            return usuarios
+
+        with open(ruta, "r", encoding="utf-8") as f:
+            for linea in f:
+                contenido = self._descifrar_linea_usuario(linea)
+                if not contenido:
+                    continue
+                partes = contenido.strip().split(",")
+                if len(partes) != 3:
+                    continue
+                u, p, r = partes
+                usuarios.append({"username": u, "password": p, "rol": r})
+        return usuarios
+
+    def _guardar_usuarios(self, usuarios):
+        ruta = "data/configuracion/usuarios.txt"
+        with open(ruta, "w", encoding="utf-8") as f:
+            for user in usuarios:
+                plano = f"{user['username']},{user['password']},{user['rol']}"
+                f.write(self._cifrar_linea_usuario(plano))
+
+    def _migrar_usuarios_a_cifrado(self):
+        usuarios = self._cargar_usuarios()
+        if not usuarios:
+            return
+        self._guardar_usuarios(usuarios)
 
     # -------------------------
     # TARIFA
@@ -63,25 +132,52 @@ class Sistema:
     # USUARIOS
     # -------------------------
     def registrar_usuario(self, username, password, confirmacion, rol):
-        ruta = "data/configuracion/usuarios.txt"
-
         if username=="" or password=="" or confirmacion=="" or rol=="":
             return "verifique sus datos"
         
         if password!=confirmacion:
             return "verifique su contraseña"
-        
-        if os.path.exists(ruta):
-            with open(ruta, "r") as f:
-                for linea in f:
-                    if linea.split(",")[0] == username:
-                        return "Usuario ya existe"
 
-        with open(ruta, "a") as f:
-            f.write(Usuario(username, password, rol).to_txt())
+        usuarios = self._cargar_usuarios()
+        for user in usuarios:
+            if user["username"] == username:
+                return "Usuario ya existe"
+
+        usuarios.append({"username": username, "password": password, "rol": rol})
+        self._guardar_usuarios(usuarios)
 
         self.log(f"Usuario creado: {username}")
         return "Usuario registrado"
+
+    def recuperar_contrasena(self, username, nueva_password, confirmacion):
+        username = username.strip()
+        nueva_password = nueva_password.strip()
+        confirmacion = confirmacion.strip()
+
+        if not username or not nueva_password or not confirmacion:
+            return "verifique sus datos"
+        if nueva_password != confirmacion:
+            return "verifique su contraseña"
+        if not os.path.exists("data/configuracion/usuarios.txt"):
+            return "No hay usuarios registrados"
+
+        actualizado = False
+        usuarios = self._cargar_usuarios()
+        for user in usuarios:
+            if user["username"] == username:
+                user["password"] = nueva_password
+                actualizado = True
+                break
+
+        if not actualizado:
+            return "Usuario no existe"
+
+        self._guardar_usuarios(usuarios)
+
+        self.intentos_fallidos.pop(username, None)
+        self.bloqueos_login.pop(username, None)
+        self.log(f"Recuperación de contraseña para usuario: {username}")
+        return "Contraseña actualizada"
 
     def login(self, username, password):
         username = username.strip()
@@ -97,21 +193,17 @@ class Sistema:
         if bloqueado_hasta and datetime.now() >= bloqueado_hasta:
             self.bloqueos_login.pop(username, None)
 
-        ruta = "data/configuracion/usuarios.txt"
-
-        if not os.path.exists(ruta):
+        if not os.path.exists("data/configuracion/usuarios.txt"):
             self.ultimo_error_login = "No hay usuarios registrados."
             return False, None
 
-        with open(ruta, "r") as f:
-            for linea in f:
-                u, p, r = linea.strip().split(",")
-                if u == username and p == password:
-                    self.usuario_actual = u
-                    self.intentos_fallidos.pop(username, None)
-                    self.bloqueos_login.pop(username, None)
-                    self.log("Inicio de sesion")
-                    return True, r
+        for user in self._cargar_usuarios():
+            if user["username"] == username and user["password"] == password:
+                self.usuario_actual = user["username"]
+                self.intentos_fallidos.pop(username, None)
+                self.bloqueos_login.pop(username, None)
+                self.log("Inicio de sesion")
+                return True, user["rol"]
 
         intentos = self.intentos_fallidos.get(username, 0) + 1
         self.intentos_fallidos[username] = intentos
@@ -138,11 +230,12 @@ class Sistema:
                 return False
 
     def obtener_usuarios(self):
-        ruta = "data/configuracion/usuarios.txt"
-        if not os.path.exists(ruta):
+        if not os.path.exists("data/configuracion/usuarios.txt"):
             return []
-        with open(ruta, "r") as f:
-            return f.readlines()
+        return [
+            f"{user['username']},{user['password']},{user['rol']}\n"
+            for user in self._cargar_usuarios()
+        ]
 
     # -------------------------
     # VEHICULOS

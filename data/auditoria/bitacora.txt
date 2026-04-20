@@ -169,3 +169,8 @@
 [08:40] juan1 -> Inicio de sesion
 [08:41] juan1 -> Salida: P349JTR - Q10.0
 [08:42] juan1 -> Cierre de sesion
+[08:52] juan1 -> Inicio de sesion
+[09:20] Sistema -> Usuario creado: user1
+[09:20] user1 -> Inicio de sesion
+[09:21] user1 -> Cierre de sesion
+[09:21] juan1 -> Inicio de sesion

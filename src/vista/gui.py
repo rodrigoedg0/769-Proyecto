@@ -137,6 +137,16 @@ class App:
         ttk.Button(card, text="Crear una cuenta", style="Modern.TButton", command=self.registro).grid(
             row=4, column=0, columnspan=2, sticky="ew"
         )
+        recuperar = tk.Label(
+            card,
+            text="¿Has olvidado la contraseña?",
+            bg="#1F2937",
+            fg="#93C5FD",
+            cursor="hand2",
+            font=("Segoe UI", 10, "underline")
+        )
+        recuperar.grid(row=5, column=0, columnspan=2, pady=(10, 0))
+        recuperar.bind("<Button-1>", lambda e: self.recuperar_password_view())
 
     def login(self):
         ok, rol = self.sistema.login(self.u.get(), self.p.get())
@@ -203,6 +213,45 @@ class App:
         label_informacion.grid(row=5, column=0, columnspan=2, pady=(0, 6))
         ttk.Button(v, text="Volver", style="Modern.TButton", command=self.login_view).grid(
             row=6, column=0, columnspan=2, sticky="ew"
+        )
+
+    def recuperar_password_view(self):
+        self.clear()
+
+        contenedor = ttk.Frame(self.root, style="Modern.TFrame", padding=24)
+        contenedor.pack(fill="both", expand=True)
+
+        ttk.Label(contenedor, text="Recuperar contraseña", style="Title.TLabel").pack(pady=(20, 14))
+        v = self._crear_card(contenedor)
+        v.pack()
+
+        ttk.Label(v, text="Usuario", style="Modern.TLabel").grid(row=0, column=0, sticky="w", pady=6)
+        u = ttk.Entry(v, width=30)
+        u.grid(row=0, column=1, pady=6, padx=(10, 0))
+
+        ttk.Label(v, text="Nueva contraseña", style="Modern.TLabel").grid(row=1, column=0, sticky="w", pady=6)
+        p = ttk.Entry(v, width=30, show="*")
+        p.grid(row=1, column=1, pady=6, padx=(10, 0))
+
+        ttk.Label(v, text="Confirmación", style="Modern.TLabel").grid(row=2, column=0, sticky="w", pady=6)
+        c = ttk.Entry(v, width=30, show="*")
+        c.grid(row=2, column=1, pady=6, padx=(10, 0))
+
+        label_info = ttk.Label(v, style="Subtitle.TLabel")
+        label_info.grid(row=4, column=0, columnspan=2, pady=(4, 6))
+
+        def guardar():
+            mensaje = self.sistema.recuperar_contrasena(u.get(), p.get(), c.get())
+            label_info.config(text=mensaje)
+            if mensaje == "Contraseña actualizada":
+                messagebox.showinfo("Recuperación", mensaje)
+                self.login_view()
+
+        ttk.Button(v, text="Actualizar contraseña", style="Modern.TButton", command=guardar).grid(
+            row=3, column=0, columnspan=2, sticky="ew", pady=(12, 6)
+        )
+        ttk.Button(v, text="Volver", style="Modern.TButton", command=self.login_view).grid(
+            row=5, column=0, columnspan=2, sticky="ew"
         )
 
     # ---------------- MENU ----------------
