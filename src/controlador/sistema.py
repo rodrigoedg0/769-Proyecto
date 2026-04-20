@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from src.modelo.usuario import Usuario
 from src.modelo.vehiculo import Vehiculo
 from src.modelo.movimiento import Movimiento
@@ -7,9 +7,15 @@ from src.modelo.parqueo import Parqueo
 
 
 class Sistema:
+    MAX_INTENTOS_LOGIN = 4
+    BLOQUEO_LOGIN_MINUTOS = 3
+
     def __init__(self):
         self.parqueo = Parqueo()
         self.usuario_actual = None
+        self.intentos_fallidos = {}
+        self.bloqueos_login = {}
+        self.ultimo_error_login = ""
         self.crear_estructura()
         self.inicializar_config()
 
@@ -48,7 +54,7 @@ class Sistema:
     # BITACORA
     # -------------------------
     def log(self, mensaje):
-        with open("data/auditoria/bitacora.txt", "a") as f:
+        with open("data/auditoria/bitacora.txt", "a", encoding="utf-8") as f:
             hora = datetime.now().strftime("%H:%M")
             usuario = self.usuario_actual if self.usuario_actual else "Sistema"
             f.write(f"[{hora}] {usuario} -> {mensaje}\n")
@@ -78,9 +84,23 @@ class Sistema:
         return "Usuario registrado"
 
     def login(self, username, password):
+        username = username.strip()
+        self.ultimo_error_login = ""
+
+        bloqueado_hasta = self.bloqueos_login.get(username)
+        if bloqueado_hasta and datetime.now() < bloqueado_hasta:
+            restante = int((bloqueado_hasta - datetime.now()).total_seconds())
+            minutos = (restante + 59) // 60
+            self.ultimo_error_login = f"Usuario bloqueado. Intente de nuevo en {minutos} minuto(s)."
+            return False, None
+
+        if bloqueado_hasta and datetime.now() >= bloqueado_hasta:
+            self.bloqueos_login.pop(username, None)
+
         ruta = "data/configuracion/usuarios.txt"
 
         if not os.path.exists(ruta):
+            self.ultimo_error_login = "No hay usuarios registrados."
             return False, None
 
         with open(ruta, "r") as f:
@@ -88,8 +108,26 @@ class Sistema:
                 u, p, r = linea.strip().split(",")
                 if u == username and p == password:
                     self.usuario_actual = u
+                    self.intentos_fallidos.pop(username, None)
+                    self.bloqueos_login.pop(username, None)
                     self.log("Inicio de sesion")
                     return True, r
+
+        intentos = self.intentos_fallidos.get(username, 0) + 1
+        self.intentos_fallidos[username] = intentos
+
+        if intentos >= self.MAX_INTENTOS_LOGIN:
+            self.bloqueos_login[username] = datetime.now() + timedelta(minutes=self.BLOQUEO_LOGIN_MINUTOS)
+            self.intentos_fallidos.pop(username, None)
+            self.ultimo_error_login = (
+                f"Se bloqueó el usuario por {self.BLOQUEO_LOGIN_MINUTOS} minutos "
+                f"por demasiados intentos fallidos."
+            )
+            self.log(f"Bloqueo de login para usuario: {username}")
+            return False, None
+
+        restantes = self.MAX_INTENTOS_LOGIN - intentos
+        self.ultimo_error_login = f"Login incorrecto. Intentos restantes antes de bloqueo: {restantes}."
         return False, None
     
     def Es_admin(self, contra):
@@ -195,9 +233,37 @@ class Sistema:
 
         return datos
 
+    def leer_reporte_movimiento(self, archivo):
+        carpeta = "data/movimientos"
+        ruta = os.path.normpath(os.path.join(carpeta, archivo))
+
+        if not ruta.startswith(os.path.normpath(carpeta) + os.sep):
+            return "Archivo inválido."
+        if not os.path.exists(ruta):
+            return "El archivo seleccionado no existe."
+
+        with open(ruta, "rb") as f:
+            contenido = f.read()
+
+        for encoding in ("utf-8", "latin-1", "cp1252"):
+            try:
+                return contenido.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+
+        return contenido.decode("utf-8", errors="replace")
+
     def ver_bitacora(self):
         ruta = "data/auditoria/bitacora.txt"
         if not os.path.exists(ruta):
             return []
-        with open(ruta) as f:
-            return f.readlines()
+        with open(ruta, "rb") as f:
+            contenido = f.read()
+
+        for encoding in ("utf-8", "latin-1", "cp1252"):
+            try:
+                return contenido.decode(encoding).splitlines(keepends=True)
+            except UnicodeDecodeError:
+                continue
+
+        return contenido.decode("utf-8", errors="replace").splitlines(keepends=True)

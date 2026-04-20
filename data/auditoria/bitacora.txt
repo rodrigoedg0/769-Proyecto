@@ -151,3 +151,21 @@
 [20:50] j -> Inicio de sesion
 [20:50] j -> Salida: M238GFR - Q10.0
 [20:50] j -> Salida: P234EYT - Q10.0
+[08:14] rodrigo -> Inicio de sesion
+[08:15] rodrigo -> Cierre de sesion
+[08:15] Sistema -> Usuario creado: juan1
+[08:16] juan1 -> Inicio de sesion
+[08:16] juan1 -> Cierre de sesion
+[08:25] Sistema -> Bloqueo de login para usuario: usuario_prueba_bloqueo
+[08:26] Sistema -> Bloqueo de login para usuario: asdf
+[08:27] juan1 -> Inicio de sesion
+[08:31] juan1 -> Inicio de sesion
+[08:31] rodro -> Inicio de sesion
+[08:33] rodro -> Inicio de sesion
+[08:34] juan1 -> Inicio de sesion
+[08:35] juan1 -> Inicio de sesion
+[08:36] juan1 -> Inicio de sesion
+[08:39] juan1 -> Inicio de sesion
+[08:40] juan1 -> Inicio de sesion
+[08:41] juan1 -> Salida: P349JTR - Q10.0
+[08:42] juan1 -> Cierre de sesion
