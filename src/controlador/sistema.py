@@ -139,14 +139,14 @@ class Sistema:
         if not os.path.exists(ruta_vehiculo):
             return "Vehículo no registrado"
 
-        if placa in self.parqueo.ocupados:
+        if placa in self.parqueo.ocupados():
             return "El vehículo ya está dentro"
 
         if not self.parqueo.hay_espacio():
             return "Parqueo lleno"
 
-        if placa not in self.parqueo.ocupados:
-            self.parqueo.ocupados.append(placa)
+        if placa not in self.parqueo.ocupados():
+            self.parqueo.ingresar(placa)
 
         mov = Movimiento(placa)
         ruta = f"data/movimientos/{placa}_historial.txt"
@@ -160,7 +160,7 @@ class Sistema:
     def registrar_salida(self, placa):
         placa = placa.upper()
 
-        if placa not in self.parqueo.ocupados:
+        if placa not in self.parqueo.ocupados():
             return f"{placa} no está en el parqueo"
 
         tarifa = self.obtener_tarifa()
@@ -180,7 +180,7 @@ class Sistema:
         return f"Salida registrada. Total a pagar: Q{mov.total}"
 
     def vehiculos_activos(self):
-        return self.parqueo.ocupados
+        return self.parqueo.ocupados()
 
     # -------------------------
     # REPORTES

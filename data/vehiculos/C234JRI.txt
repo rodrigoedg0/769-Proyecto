@@ -1,0 +1,2 @@
+Placa:C234JRI
+Tipo:carro

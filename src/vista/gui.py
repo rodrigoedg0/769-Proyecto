@@ -149,7 +149,7 @@ class App:
                 with open(ruta, "r") as f:
                     contenido = f.read()
                 tk.Label(self.frame_principal, text=contenido).pack(pady=(5,0))
-                tk.Button(self.frame_principal, text="Salida", command=lambda:self.salida(placa)).pack()
+                tk.Button(self.frame_principal, text="Salida", command=lambda p=placa:self.salida(p)).pack()
                 
     def vehiculo(self):
         for widget in self.frame_principal.winfo_children():

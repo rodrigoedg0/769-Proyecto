@@ -73,3 +73,81 @@
 [03:25] j -> Inicio de sesion
 [03:26] j -> Registro vehiculo: P234EYT
 [03:26] j -> Entrada: P234EYT
+[03:27] j -> Inicio de sesion
+[19:01] rebeca -> Inicio de sesion
+[19:01] rebeca -> Cierre de sesion
+[19:01] j -> Inicio de sesion
+[19:01] j -> Registro vehiculo: P234JGT
+[19:01] j -> Entrada: P234JGT
+[19:01] j -> Registro vehiculo: M443KUY
+[19:01] j -> Entrada: M443KUY
+[19:01] j -> Inicio de sesion
+[19:04] j -> Registro vehiculo: M345JGH
+[19:04] j -> Entrada: M345JGH
+[19:04] j -> Salida: M345JGH - Q10.0
+[19:04] j -> Inicio de sesion
+[19:08] j -> Inicio de sesion
+[19:26] j -> Inicio de sesion
+[19:26] j -> Registro vehiculo: P234DTR
+[19:26] j -> Entrada: P234DTR
+[19:27] j -> Registro vehiculo: M545KSD
+[19:27] j -> Entrada: M545KSD
+[19:43] j -> Inicio de sesion
+[19:46] j -> Inicio de sesion
+[19:47] j -> Registro vehiculo: P234GTR
+[19:49] j -> Inicio de sesion
+[19:49] j -> Registro vehiculo: M234JSD
+[19:52] j -> Inicio de sesion
+[19:53] j -> Registro vehiculo: M345HDF
+[19:53] j -> Entrada: M345HDF
+[19:53] j -> Registro vehiculo: C234RTE
+[19:53] j -> Entrada: C234RTE
+[19:56] j -> Inicio de sesion
+[19:56] j -> Salida: C234RTE - Q10.0
+[19:56] j -> Salida: C234RTE - Q10.0
+[19:56] j -> Registro vehiculo: M234RTS
+[19:56] j -> Entrada: M234RTS
+[19:57] j -> Salida: M234RTS - Q10.0
+[19:57] j -> Salida: M234RTS - Q10.0
+[20:04] j -> Inicio de sesion
+[20:04] j -> Salida: M234RTS - Q10.0
+[20:06] j -> Inicio de sesion
+[20:06] j -> Salida: M234RTS - Q10.0
+[20:06] j -> Salida: C234RTE - Q10.0
+[20:07] j -> Inicio de sesion
+[20:07] j -> Salida: C234RTE - Q10.0
+[20:08] j -> Inicio de sesion
+[20:08] j -> Salida: C234RTE - Q10.0
+[20:10] j -> Inicio de sesion
+[20:10] j -> Salida: C234RTE - Q10.0
+[20:10] j -> Salida: M345HDF - Q10.0
+[20:10] j -> Salida: M545KSD - Q10.0
+[20:21] j -> Inicio de sesion
+[20:21] j -> Registro vehiculo: M234TRE
+[20:21] j -> Entrada: M234TRE
+[20:21] j -> Salida: M234TRE - Q10.0
+[20:23] j -> Inicio de sesion
+[20:23] j -> Registro vehiculo: C234KRT
+[20:23] j -> Entrada: C234KRT
+[20:24] j -> Registro vehiculo: P554ITR
+[20:24] j -> Entrada: P554ITR
+[20:24] j -> Salida: P554ITR - Q10.0
+[20:24] j -> Salida: P554ITR - Q10.0
+[20:24] j -> Salida: P554ITR - Q10.0
+[20:24] j -> Salida: P554ITR - Q10.0
+[20:25] j -> Salida: P554ITR - Q10.0
+[20:25] j -> Salida: P554ITR - Q10.0
+[20:25] j -> Salida: P554ITR - Q10.0
+[20:27] j -> Inicio de sesion
+[20:36] j -> Inicio de sesion
+[20:36] j -> Salida: C234KRT - Q10.0
+[20:36] j -> Salida: P234DTR - Q10.0
+[20:36] j -> Salida: P554ITR - Q10.0
+[20:37] j -> Registro vehiculo: P349JTR
+[20:37] j -> Entrada: P349JTR
+[20:37] j -> Registro vehiculo: C234JRI
+[20:37] j -> Entrada: C234JRI
+[20:37] j -> Inicio de sesion
+[20:50] j -> Inicio de sesion
+[20:50] j -> Salida: M238GFR - Q10.0
+[20:50] j -> Salida: P234EYT - Q10.0
