@@ -446,7 +446,7 @@ class App:
             widget.destroy()
 
         ttk.Label(self.frame_principal, text="Tarifa", style="Title.TLabel").pack(anchor="w")
-        contenido = f"La tarifa actual es de Q{self.sistema.obtener_tarifa()}"
+        contenido = "La tarifa es de Q5 por cada 30 minutos"
         card = self._crear_card(self.frame_principal)
         card.pack(fill="x", pady=(12, 0))
         ttk.Label(card, text=contenido, style="CardTitle.TLabel").pack(anchor="w")

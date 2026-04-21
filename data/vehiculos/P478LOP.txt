@@ -1,0 +1,2 @@
+Placa:P478LOP
+Tipo:carro

@@ -294,13 +294,35 @@ class Sistema:
         if placa not in self.parqueo.ocupados():
             return f"{placa} no está en el parqueo"
 
-        tarifa = self.obtener_tarifa()
+        ruta = f"data/movimientos/{placa}_historial.txt"
+
+        if not os.path.exists(ruta):
+            return "No hay historial del vehículo"
+
+        ultima_entrada = None
+        with open(ruta, "r") as f:
+            for linea in f:
+                if linea.startswith("ENTRADA"):
+                    fecha_str = linea.strip().split(",")[1]
+                    ultima_entrada = datetime.fromisoformat(fecha_str)
+
+        if not ultima_entrada:
+            return "No se encontró entrada registrada"
+
+        salida = datetime.now()
+
+        tiempo = salida - ultima_entrada
+        minutos = tiempo.total_seconds() / 60
+
+        bloques = int(minutos // 30)
+        if minutos % 30 > 0:
+            bloques += 1
+
+        total = bloques * 5
 
         mov = Movimiento(placa)
-        mov.salida = datetime.now()
-        mov.total = tarifa
-
-        ruta = f"data/movimientos/{placa}_historial.txt"
+        mov.salida = salida
+        mov.total = total
 
         with open(ruta, "a") as f:
             f.write(mov.to_txt_salida())

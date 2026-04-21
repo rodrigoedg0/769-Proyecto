@@ -1,1 +1,1 @@
-tarifa_hora=10.00
+tarifa_hora=5
