@@ -1,7 +1,6 @@
 import os
 import base64
 import hashlib
-import secrets
 from datetime import datetime, timedelta
 from src.modelo.vehiculo import Vehiculo
 from src.modelo.movimiento import Movimiento
@@ -40,42 +39,44 @@ class Sistema:
         if not os.path.exists(ruta):
             with open(ruta, "w") as f:
                 f.write("tarifa_hora=5\n")
-        self._inicializar_cifrado_usuarios()
-        self._migrar_usuarios_a_cifrado()
-
-    def _inicializar_cifrado_usuarios(self):
-        self.ruta_key_usuarios = "data/configuracion/usuarios.key"
-        if not os.path.exists(self.ruta_key_usuarios):
-            with open(self.ruta_key_usuarios, "w", encoding="utf-8") as f:
-                f.write(secrets.token_hex(32))
-
-        with open(self.ruta_key_usuarios, "r", encoding="utf-8") as f:
-            self._key_usuarios = f.read().strip()
-
-    def _derivar_llave(self):
-        return hashlib.sha256(self._key_usuarios.encode("utf-8")).digest()
+        self._migrar_usuarios_a_formato_simple()
 
     def _cifrar_linea_usuario(self, texto):
-        datos = texto.encode("utf-8")
-        llave = self._derivar_llave()
-        cifrado = bytes(b ^ llave[i % len(llave)] for i, b in enumerate(datos))
-        token = base64.urlsafe_b64encode(cifrado).decode("ascii")
-        return f"ENC:{token}\n"
+        token = base64.urlsafe_b64encode(texto.encode("utf-8")).decode("ascii")
+        return f"ENC2:{token}\n"
+
+    def _descifrar_linea_legacy(self, token):
+        ruta_key = "data/configuracion/usuarios.key"
+        if not os.path.exists(ruta_key):
+            return ""
+        with open(ruta_key, "r", encoding="utf-8") as f:
+            llave_txt = f.read().strip()
+        if not llave_txt:
+            return ""
+
+        try:
+            cifrado = base64.urlsafe_b64decode(token.encode("ascii"))
+            llave = hashlib.sha256(llave_txt.encode("utf-8")).digest()
+            datos = bytes(b ^ llave[i % len(llave)] for i, b in enumerate(cifrado))
+            return datos.decode("utf-8")
+        except Exception:
+            return ""
 
     def _descifrar_linea_usuario(self, linea):
         linea = linea.strip()
         if not linea:
             return ""
-        if not linea.startswith("ENC:"):
+        if linea.startswith("ENC2:"):
+            token = linea[5:]
+            try:
+                return base64.urlsafe_b64decode(token.encode("ascii")).decode("utf-8")
+            except Exception:
+                return ""
+        if linea.startswith("ENC:"):
+            return self._descifrar_linea_legacy(linea[4:])
+        if not linea.startswith("ENC"):
             return linea
-        token = linea[4:]
-        try:
-            cifrado = base64.urlsafe_b64decode(token.encode("ascii"))
-            llave = self._derivar_llave()
-            datos = bytes(b ^ llave[i % len(llave)] for i, b in enumerate(cifrado))
-            return datos.decode("utf-8")
-        except Exception:
-            return ""
+        return ""
 
     def _cargar_usuarios(self):
         ruta = "data/configuracion/usuarios.txt"
@@ -102,7 +103,7 @@ class Sistema:
                 plano = f"{user['username']},{user['password']},{user['rol']}"
                 f.write(self._cifrar_linea_usuario(plano))
 
-    def _migrar_usuarios_a_cifrado(self):
+    def _migrar_usuarios_a_formato_simple(self):
         usuarios = self._cargar_usuarios()
         if not usuarios:
             return

@@ -1,11 +1,11 @@
 [20:09] Sistema -> Usuario creado: rodro
 [20:16] rodro -> Entrada PASDFSAD
-[21:00] rocio -> Inicio de sesión
-[21:00] rocio -> Registró vehículo: P963RTF
+[21:00] rocio -> Inicio de sesiï¿½n
+[21:00] rocio -> Registrï¿½ vehï¿½culo: P963RTF
 [21:00] rocio -> Entrada: P963RTF
-[21:01] rocio -> Registró vehículo: M852LOP
+[21:01] rocio -> Registrï¿½ vehï¿½culo: M852LOP
 [21:01] rocio -> Entrada: M852LOP
-[21:01] rocio -> Registró vehículo: M741UJH
+[21:01] rocio -> Registrï¿½ vehï¿½culo: M741UJH
 [21:01] rocio -> Entrada: M741UJH
 [21:01] rocio -> Salida: M852LOP - Q10.0
 [21:02] rocio -> Salida: M741UJH - Q10.0
@@ -174,19 +174,3 @@
 [09:20] user1 -> Inicio de sesion
 [09:21] user1 -> Cierre de sesion
 [09:21] juan1 -> Inicio de sesion
-[14:07] juan1 -> Inicio de sesion
-[14:07] juan1 -> Registro vehiculo: P485LKJ
-[14:07] juan1 -> Entrada: P485LKJ
-[14:08] juan1 -> Salida: P485LKJ - Q5
-[14:08] juan1 -> Registro vehiculo: M478PLK
-[14:08] juan1 -> Entrada: M478PLK
-[14:24] juan1 -> Inicio de sesion
-[14:24] juan1 -> Registro vehiculo: P478LOP
-[14:24] juan1 -> Entrada: P478LOP
-[14:24] juan1 -> Salida: M478PLK - Q5
-[14:26] rocio -> Inicio de sesion
-[14:26] rocio -> Registro vehiculo: M748HTY
-[14:26] rocio -> Entrada: M748HTY
-[15:02] rocio -> Inicio de sesion
-[15:02] rocio -> Salida: P478LOP - Q10
-[15:02] rocio -> Cierre de sesion
