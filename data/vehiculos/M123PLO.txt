@@ -1,0 +1,3 @@
+Placa:M123PLO
+Tipo:moto
+Pais:Guatemala

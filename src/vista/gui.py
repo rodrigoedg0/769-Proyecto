@@ -361,7 +361,8 @@ class App:
         self.label_estado.pack(anchor="w", pady=(8, 0))
         if not activos:
             self.label_estado.config(text="No hay vehículos activos en este momento.")
-                
+
+    # ---------------- VEHICULO ----------------
     def vehiculo(self):
         for widget in self.frame_principal.winfo_children():
             widget.destroy()
@@ -369,54 +370,77 @@ class App:
         ttk.Label(self.frame_principal, text="Registrar vehículo", style="Title.TLabel").pack(anchor="w")
         ttk.Label(
             self.frame_principal,
-            text="Se registrará el vehículo y su entrada de inmediato",
+            text="Se detectará el país automáticamente según el formato",
             style="Subtitle.TLabel"
         ).pack(anchor="w", pady=(0, 12))
 
         card = self._crear_card(self.frame_principal)
         card.pack(anchor="w")
 
+        
         ttk.Label(card, text="Placa:", style="Modern.TLabel").grid(row=0, column=0, sticky="w", pady=6)
         entrada_placa = ttk.Entry(card, width=30)
         entrada_placa.grid(row=0, column=1, pady=6, padx=(10, 0))
 
-        ttk.Label(card, text="Tipo de vehículo:", style="Modern.TLabel").grid(row=1, column=0, sticky="w", pady=6)
+        
+        ttk.Label(card, text="País detectado:", style="Modern.TLabel").grid(row=1, column=0, sticky="w", pady=6)
+        var_pais = tk.StringVar(value="Esperando placa...")
+        label_pais = ttk.Label(card, textvariable=var_pais, foreground="#93C5FD", font=("Segoe UI", 10, "bold"))
+        label_pais.grid(row=1, column=1, sticky="w", pady=6, padx=(10, 0))
+
+        
+        ttk.Label(card, text="Tipo de vehículo:", style="Modern.TLabel").grid(row=2, column=0, sticky="w", pady=6)
         entrada_tipo = ttk.Combobox(card, width=27, state="readonly", values=["carro", "moto"])
-        entrada_tipo.grid(row=1, column=1, pady=6, padx=(10, 0))
+        entrada_tipo.grid(row=2, column=1, pady=6, padx=(10, 0))
         entrada_tipo.set("carro")
 
-        def mayuscula(event):
+        def analizar_placa(event):
             texto = entrada_placa.get().upper()
             entrada_placa.delete(0, tk.END)
             entrada_placa.insert(0, texto)
-
-        entrada_placa.bind("<KeyRelease>", mayuscula)
-
-        def registrar():
-            placa = entrada_placa.get().upper()
-            tipo = entrada_tipo.get().strip().lower()
-
-            if not placa or not tipo:
-                messagebox.showerror("Error", "Todos los campos son obligatorios")
+            
+            if not texto:
+                var_pais.set("Esperando placa...")
                 return
 
             try:
-                Vehiculo(placa, tipo)
-            except ValueError as e:
-                messagebox.showerror("Error", str(e))
+                
+                v_temp = Vehiculo(texto, entrada_tipo.get())
+                var_pais.set(v_temp.pais)
+            except ValueError:
+                var_pais.set("Formato no reconocido")
+            except Exception:
+                
+                pass
+
+        entrada_placa.bind("<KeyRelease>", analizar_placa)
+
+        def registrar():
+            placa = entrada_placa.get().upper().strip()
+            tipo = entrada_tipo.get().strip().lower()
+
+            if not placa:
+                messagebox.showerror("Error", "La placa es obligatoria")
                 return
 
-            resultado = self.sistema.registrar_vehiculo(placa, tipo)
-            entrada = self.sistema.registrar_entrada(placa)
+            try:
+                
+                Vehiculo(placa, tipo)
+                
+                resultado = self.sistema.registrar_vehiculo(placa, tipo)
+                entrada = self.sistema.registrar_entrada(placa)
 
-            messagebox.showinfo("Resultado", f"{resultado}\n{entrada}")
-            self.activos()
+                messagebox.showinfo("Resultado", f"{resultado}\n{entrada}")
+                self.activos()
+            except ValueError as e:
+                # Este error vendrá directamente de tu lógica en vehiculo.py
+                messagebox.showerror("Validación", str(e))
 
         ttk.Button(card, text="Registrar entrada", style="Modern.TButton", command=registrar).grid(
-            row=2, column=0, columnspan=2, sticky="ew", pady=(10, 6)
+            row=3, column=0, columnspan=2, sticky="ew", pady=(20, 6)
         )
         ttk.Button(card, text="Volver a activos", style="Modern.TButton", command=self.activos).grid(
-            row=3, column=0, columnspan=2, sticky="ew"
+            row=4, column=0, columnspan=2, sticky="ew"
         )
 
     # ---------------- SALIDA ----------------
@@ -605,4 +629,3 @@ class App:
 
         messagebox.showinfo("Sesión", "Sesión cerrada correctamente")
         self.login_view()
-    

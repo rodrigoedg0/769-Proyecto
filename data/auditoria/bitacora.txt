@@ -174,3 +174,43 @@
 [09:20] user1 -> Inicio de sesion
 [09:21] user1 -> Cierre de sesion
 [09:21] juan1 -> Inicio de sesion
+[09:25] rocio -> Inicio de sesion
+[09:25] rocio -> Inicio de sesion
+[09:25] rocio -> Inicio de sesion
+[09:25] rocio -> Inicio de sesion
+[09:34] rocio -> Inicio de sesion
+[09:55] juan1 -> Inicio de sesion
+[10:03] juan1 -> Inicio de sesion
+[19:19] juan1 -> Inicio de sesion
+[19:59] juan1 -> Inicio de sesion
+[20:10] juan1 -> Inicio de sesion
+[20:13] juan1 -> Cierre de sesion
+[20:24] juan1 -> Inicio de sesion
+[20:45] juan1 -> Inicio de sesion
+[21:02] juan1 -> Inicio de sesion
+[21:09] juan1 -> Inicio de sesion
+[21:13] juan1 -> Inicio de sesion
+[21:15] juan1 -> Inicio de sesion
+[21:15] juan1 -> Registro vehiculo: M123PLO
+[21:15] juan1 -> Entrada: M123PLO
+[21:18] juan1 -> Inicio de sesion
+[21:20] juan1 -> Inicio de sesion
+[21:21] juan1 -> Registro vehiculo: M458GTF
+[21:21] juan1 -> Entrada: M458GTF
+[21:21] juan1 -> Salida: M458GTF - Q5
+[21:21] juan1 -> Salida: M123PLO - Q5
+[21:21] juan1 -> Salida: M748HTY - Q3910
+[21:23] juan1 -> Inicio de sesion
+[21:25] juan1 -> Inicio de sesion
+[21:37] rocio -> Inicio de sesion
+[21:38] rocio -> Inicio de sesion
+[21:45] juan1 -> Inicio de sesion
+[21:47] juan1 -> Inicio de sesion
+[21:49] juan1 -> Inicio de sesion
+[21:49] juan1 -> Registro vehiculo: M458OLP
+[21:49] juan1 -> Entrada: M458OLP
+[21:52] juan1 -> Inicio de sesion
+[22:01] juan1 -> Inicio de sesion
+[22:04] juan1 -> Inicio de sesion
+[22:09] juan1 -> Inicio de sesion
+[22:15] juan1 -> Inicio de sesion
