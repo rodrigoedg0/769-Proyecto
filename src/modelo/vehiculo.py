@@ -1,6 +1,8 @@
 import re
 
 class Vehiculo:
+    TIPOS_VALIDOS = {"carro", "moto", "camion", "transporte pesado"}
+
     def __init__(self, placa, tipo):
         self.placa = placa.upper().strip()
         self.tipo = tipo.lower()
@@ -9,16 +11,32 @@ class Vehiculo:
         self.validar_placa()
 
     def validar_placa(self):
+        if self.tipo not in self.TIPOS_VALIDOS:
+            raise ValueError("Tipo de vehículo no permitido")
 
         # ---------------- GUATEMALA ----------------
-        if re.match(r'^[PMC]\d{3}[A-Z]{3}$', self.placa):
+        if re.match(r'^(TC|[PMC])\d{3}[A-Z]{3}$', self.placa):
             self.pais = "Guatemala"
-            self.tipo_detectado = "moto" if self.placa[0] == "M" else "carro"
+            if self.placa.startswith("TC"):
+                self.tipo_detectado = "transporte pesado"
+            elif self.placa.startswith("M"):
+                self.tipo_detectado = "moto"
+            elif self.placa.startswith("C"):
+                self.tipo_detectado = "camion"
+            else:
+                self.tipo_detectado = "carro"
 
         # ---------------- EL SALVADOR ----------------
-        elif re.match(r'^[PMC]\s?\d{3}-\d{3}$', self.placa):
+        elif re.match(r'^(TC|[PMC])\s?\d{3}-\d{3}$', self.placa):
             self.pais = "El Salvador"
-            self.tipo_detectado = "moto" if self.placa[0] == "M" else "carro"
+            if self.placa.startswith("TC"):
+                self.tipo_detectado = "transporte pesado"
+            elif self.placa.startswith("M"):
+                self.tipo_detectado = "moto"
+            elif self.placa.startswith("C"):
+                self.tipo_detectado = "camion"
+            else:
+                self.tipo_detectado = "carro"
 
         # ---------------- HONDURAS ----------------
         elif re.match(r'^[A-Z]{3}\s?\d{4}$', self.placa):
@@ -30,6 +48,8 @@ class Vehiculo:
             self.pais = "Nicaragua"
             if self.placa.startswith("M"):
                 self.tipo_detectado = "moto"
+            elif self.placa.startswith("T"):
+                self.tipo_detectado = "transporte pesado"
             else:
                 self.tipo_detectado = "carro"
 
@@ -53,11 +73,10 @@ class Vehiculo:
             raise ValueError("Formato de placa inválido en Centroamérica")
 
         # ---------------- VALIDACION DE TIPO ----------------
-        if self.tipo_detectado != "desconocido":
-            if self.tipo != self.tipo_detectado:
-                raise ValueError(
-                    f"Error: la placa corresponde a {self.tipo_detectado}, no a {self.tipo}"
-                )
+        if self.tipo_detectado != "desconocido" and self.tipo != self.tipo_detectado:
+            raise ValueError(
+                f"Error: la placa corresponde a {self.tipo_detectado}, no a {self.tipo}"
+            )
 
         return True
 

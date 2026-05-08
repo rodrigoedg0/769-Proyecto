@@ -1,1 +1,2 @@
-tarifa_hora=5
+tarifa_hora=30.0
+tarifa_media_hora=20.0

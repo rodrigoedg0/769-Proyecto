@@ -103,6 +103,20 @@ class App:
         card = ttk.Frame(parent, style="Card.TFrame", padding=16)
         return card
 
+    def _validar_entero_o_vacio(self, nuevo_valor):
+        if nuevo_valor == "":
+            return True
+        return nuevo_valor.isdigit()
+
+    def _validar_decimal_o_vacio(self, nuevo_valor):
+        if nuevo_valor == "":
+            return True
+        try:
+            float(nuevo_valor)
+            return True
+        except ValueError:
+            return False
+
     # ---------------- LOGIN ----------------
     def login_view(self):
         self.clear()
@@ -237,21 +251,27 @@ class App:
         c = ttk.Entry(v, width=30, show="*")
         c.grid(row=2, column=1, pady=6, padx=(10, 0))
 
+        ttk.Label(v, text="Contraseña admin", style="Modern.TLabel").grid(row=3, column=0, sticky="w", pady=6)
+        admin = ttk.Entry(v, width=30, show="*")
+        admin.grid(row=3, column=1, pady=6, padx=(10, 0))
+
         label_info = ttk.Label(v, style="Subtitle.TLabel")
-        label_info.grid(row=4, column=0, columnspan=2, pady=(4, 6))
+        label_info.grid(row=5, column=0, columnspan=2, pady=(4, 6))
 
         def guardar():
-            mensaje = self.sistema.recuperar_contrasena(u.get(), p.get(), c.get())
+            mensaje = self.sistema.recuperar_contrasena(
+                u.get(), p.get(), c.get(), admin.get()
+            )
             label_info.config(text=mensaje)
             if mensaje == "Contraseña actualizada":
                 messagebox.showinfo("Recuperación", mensaje)
                 self.login_view()
 
         ttk.Button(v, text="Actualizar contraseña", style="Modern.TButton", command=guardar).grid(
-            row=3, column=0, columnspan=2, sticky="ew", pady=(12, 6)
+            row=4, column=0, columnspan=2, sticky="ew", pady=(12, 6)
         )
         ttk.Button(v, text="Volver", style="Modern.TButton", command=self.login_view).grid(
-            row=5, column=0, columnspan=2, sticky="ew"
+            row=6, column=0, columnspan=2, sticky="ew"
         )
 
     # ---------------- MENU ----------------
@@ -278,12 +298,17 @@ class App:
         ttk.Button(frame_menu, text="Vehículos activos", style="Menu.TButton", command=self.activos).pack(
             fill="x", pady=2
         )
-        ttk.Button(frame_menu, text="Tarifa", style="Menu.TButton", command=self.tarifa).pack(fill="x", pady=2)
         ttk.Button(frame_menu, text="Cerrar sesión", style="Menu.TButton", command=self.cerrar_sesion).pack(
             fill="x", pady=(2, 14)
         )
 
         botones_admin = ttk.Frame(frame_menu, style="Sidebar.TFrame")
+        ttk.Button(
+            botones_admin,
+            text="Configuración global",
+            style="Menu.TButton",
+            command=self.tarifa
+        ).pack(fill="x", pady=2)
         ttk.Button(botones_admin, text="Ver usuarios", style="Menu.TButton", command=self.ver_usuarios).pack(
             fill="x", pady=2
         )
@@ -302,15 +327,8 @@ class App:
 
     # ---------------- ACTIVOS ----------------
     def _obtener_tipo_vehiculo(self, placa):
-        ruta = f"data/vehiculos/{placa}.txt"
-        try:
-            with open(ruta, "r") as f:
-                for linea in f:
-                    if linea.lower().startswith("tipo:"):
-                        return linea.split(":", 1)[1].strip()
-        except FileNotFoundError:
-            return "No registrado"
-        return "No registrado"
+        tipo = self.sistema.obtener_tipo_vehiculo(placa)
+        return tipo if tipo else "No registrado"
 
     def activos(self):
         for widget in self.frame_principal.winfo_children():
@@ -389,10 +407,40 @@ class App:
         label_pais.grid(row=1, column=1, sticky="w", pady=6, padx=(10, 0))
 
         
+        tipos_disponibles = self.sistema.tipos_disponibles_para_registro()
+
         ttk.Label(card, text="Tipo de vehículo:", style="Modern.TLabel").grid(row=2, column=0, sticky="w", pady=6)
-        entrada_tipo = ttk.Combobox(card, width=27, state="readonly", values=["carro", "moto"])
+        entrada_tipo = ttk.Combobox(card, width=27, state="readonly", values=tipos_disponibles)
         entrada_tipo.grid(row=2, column=1, pady=6, padx=(10, 0))
-        entrada_tipo.set("carro")
+        if tipos_disponibles:
+            entrada_tipo.set(tipos_disponibles[0])
+        else:
+            entrada_tipo.set("")
+
+        prefijos_por_tipo = {
+            "moto": "M",
+            "carro": "P",
+            "camion": "C",
+            "transporte pesado": "TC",
+        }
+
+        def aplicar_prefijo_tipo(*_):
+            tipo_sel = entrada_tipo.get().strip().lower()
+            prefijo = prefijos_por_tipo.get(tipo_sel)
+            if not prefijo:
+                return
+
+            actual = entrada_placa.get().upper().strip()
+            sin_prefijo = actual
+            for prefijo_existente in ("TC", "M", "P", "C"):
+                if actual.startswith(prefijo_existente):
+                    sin_prefijo = actual[len(prefijo_existente):]
+                    break
+
+            nueva = f"{prefijo}{sin_prefijo}"
+            entrada_placa.delete(0, tk.END)
+            entrada_placa.insert(0, nueva)
+            analizar_placa(None)
 
         def analizar_placa(event):
             texto = entrada_placa.get().upper()
@@ -401,6 +449,10 @@ class App:
             
             if not texto:
                 var_pais.set("Esperando placa...")
+                return
+
+            if not entrada_tipo.get().strip():
+                var_pais.set("No hay tipos disponibles")
                 return
 
             try:
@@ -414,6 +466,9 @@ class App:
                 pass
 
         entrada_placa.bind("<KeyRelease>", analizar_placa)
+        entrada_tipo.bind("<<ComboboxSelected>>", aplicar_prefijo_tipo)
+        if tipos_disponibles:
+            aplicar_prefijo_tipo()
 
         def registrar():
             placa = entrada_placa.get().upper().strip()
@@ -421,6 +476,9 @@ class App:
 
             if not placa:
                 messagebox.showerror("Error", "La placa es obligatoria")
+                return
+            if not tipo:
+                messagebox.showerror("Error", "No hay tipos disponibles para registrar.")
                 return
 
             try:
@@ -436,9 +494,11 @@ class App:
                 # Este error vendrá directamente de tu lógica en vehiculo.py
                 messagebox.showerror("Validación", str(e))
 
-        ttk.Button(card, text="Registrar entrada", style="Modern.TButton", command=registrar).grid(
-            row=3, column=0, columnspan=2, sticky="ew", pady=(20, 6)
-        )
+        boton_registrar = ttk.Button(card, text="Registrar entrada", style="Modern.TButton", command=registrar)
+        boton_registrar.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(20, 6))
+        if not tipos_disponibles:
+            boton_registrar.state(["disabled"])
+            var_pais.set("Sin tipos habilitados")
         ttk.Button(card, text="Volver a activos", style="Modern.TButton", command=self.activos).grid(
             row=4, column=0, columnspan=2, sticky="ew"
         )
@@ -469,14 +529,233 @@ class App:
         for widget in self.frame_principal.winfo_children():
             widget.destroy()
 
-        ttk.Label(self.frame_principal, text="Tarifa", style="Title.TLabel").pack(anchor="w")
-        contenido = "La tarifa es de Q5 por cada 30 minutos"
+        ttk.Label(self.frame_principal, text="Configuración global", style="Title.TLabel").pack(anchor="w")
         card = self._crear_card(self.frame_principal)
-        card.pack(fill="x", pady=(12, 0))
-        ttk.Label(card, text=contenido, style="CardTitle.TLabel").pack(anchor="w")
-        ttk.Button(card, text="Regresar", style="Modern.TButton", command=self.activos).pack(
-            anchor="w", pady=(10, 0)
+        card.pack(fill="both", expand=True, pady=(12, 0))
+
+        ttk.Label(
+            card,
+            text="Tipos aceptados, cupos y tarifas por tipo",
+            style="CardTitle.TLabel"
+        ).pack(anchor="w", pady=(0, 8))
+
+        columnas = ("tipo", "estado", "ocupados", "capacidad", "hora", "media")
+        tabla = ttk.Treeview(card, columns=columnas, show="headings", height=10)
+        tabla.heading("tipo", text="Tipo")
+        tabla.heading("estado", text="Estado")
+        tabla.heading("ocupados", text="Ocupados")
+        tabla.heading("capacidad", text="Capacidad")
+        tabla.heading("hora", text="Tarifa hora")
+        tabla.heading("media", text="Tarifa media hora")
+        tabla.column("tipo", width=180, anchor="w")
+        tabla.column("estado", width=90, anchor="center")
+        tabla.column("ocupados", width=90, anchor="center")
+        tabla.column("capacidad", width=90, anchor="center")
+        tabla.column("hora", width=120, anchor="center")
+        tabla.column("media", width=140, anchor="center")
+        tabla.pack(fill="both", expand=True)
+
+        configuracion = self.sistema.obtener_configuracion_parqueo()
+        for item in configuracion:
+            estado = "Activo" if item["habilitado"] else "Inactivo"
+            tabla.insert(
+                "",
+                "end",
+                values=(
+                    item["tipo"],
+                    estado,
+                    item["ocupados"],
+                    item["capacidad"],
+                    f"Q{item['tarifa_hora']}",
+                    f"Q{item['tarifa_media_hora']}",
+                ),
+            )
+
+        info = ttk.Label(card, style="Subtitle.TLabel")
+        info.pack(anchor="w", pady=(8, 6))
+        info.config(text="Solo administradores pueden modificar esta configuración.")
+
+        def abrir_edicion():
+            if self.rol != "admin":
+                messagebox.showerror("Configuración", "Solo un administrador puede editar.")
+                return
+
+            seleccion = tabla.selection()
+            if not seleccion:
+                messagebox.showwarning("Configuración", "Selecciona un tipo de vehículo.")
+                return
+
+            tipo = tabla.item(seleccion[0], "values")[0]
+            password = simpledialog.askstring(
+                "Validación",
+                "Ingresa tu contraseña para editar configuración:",
+                show="*"
+            )
+            if password is None:
+                return
+
+            ok, mensaje = self.sistema.validar_admin_actual(password.strip())
+            if not ok:
+                messagebox.showerror("Configuración", mensaje)
+                return
+
+            self._ventana_editar_tipo(tipo)
+
+        boton_editar = ttk.Button(
+            card,
+            text="Editar tipo seleccionado",
+            style="Modern.TButton",
+            command=abrir_edicion
         )
+        boton_editar.pack(anchor="w", pady=(4, 4))
+        if self.rol != "admin":
+            boton_editar.state(["disabled"])
+
+        ttk.Button(card, text="Regresar", style="Modern.TButton", command=self.activos).pack(
+            anchor="w", pady=(2, 0)
+        )
+
+    def _ventana_editar_tipo(self, tipo):
+        modal = tk.Toplevel(self.root)
+        modal.title(f"Configurar {tipo}")
+        modal.configure(bg="#111827")
+        modal.resizable(False, False)
+        modal.transient(self.root)
+        modal.grab_set()
+
+        config = {item["tipo"]: item for item in self.sistema.obtener_configuracion_parqueo()}
+        actual = config[tipo]
+        hora_inicial = actual.get("tarifa_hora", 0)
+        media_inicial = actual.get("tarifa_media_hora", 0)
+        capacidad_inicial = actual.get("capacidad", 0)
+
+        hora_var = tk.StringVar(value=str(hora_inicial))
+        media_var = tk.StringVar(value=str(media_inicial))
+        capacidad_var = tk.StringVar(value=str(capacidad_inicial))
+        habilitado_var = tk.BooleanVar(value=actual["habilitado"])
+
+        contenedor = ttk.Frame(modal, style="Modern.TFrame", padding=16)
+        contenedor.pack(fill="both", expand=True)
+
+        ttk.Label(contenedor, text="Capacidad:", style="Modern.TLabel").grid(
+            row=0, column=0, sticky="w", pady=6
+        )
+        validar_entero = (self.root.register(self._validar_entero_o_vacio), "%P")
+        validar_decimal = (self.root.register(self._validar_decimal_o_vacio), "%P")
+
+        entrada_capacidad = ttk.Entry(
+            contenedor,
+            width=22,
+            textvariable=capacidad_var,
+            validate="key",
+            validatecommand=validar_entero
+        )
+        entrada_capacidad.grid(row=0, column=1, sticky="w", padx=(10, 0), pady=6)
+
+        ttk.Label(contenedor, text="Tarifa por hora (Q):", style="Modern.TLabel").grid(
+            row=1, column=0, sticky="w", pady=6
+        )
+        entrada_hora = ttk.Entry(
+            contenedor,
+            width=22,
+            textvariable=hora_var,
+            validate="key",
+            validatecommand=validar_decimal
+        )
+        entrada_hora.grid(row=1, column=1, sticky="w", padx=(10, 0), pady=6)
+        entrada_hora.delete(0, tk.END)
+        entrada_hora.insert(0, str(hora_inicial))
+
+        ttk.Label(contenedor, text="Tarifa por media hora (Q):", style="Modern.TLabel").grid(
+            row=2, column=0, sticky="w", pady=6
+        )
+        entrada_media = ttk.Entry(
+            contenedor,
+            width=22,
+            textvariable=media_var,
+            validate="key",
+            validatecommand=validar_decimal
+        )
+        entrada_media.grid(row=2, column=1, sticky="w", padx=(10, 0), pady=6)
+        entrada_media.delete(0, tk.END)
+        entrada_media.insert(0, str(media_inicial))
+
+        ttk.Checkbutton(
+            contenedor,
+            text="Tipo habilitado para ingreso",
+            variable=habilitado_var
+        ).grid(row=3, column=0, columnspan=2, sticky="w", pady=(4, 6))
+
+        info = ttk.Label(
+            contenedor,
+            text="Los cambios aplican solo a vehículos que entren después.",
+            style="Subtitle.TLabel"
+        )
+        info.grid(row=4, column=0, columnspan=2, sticky="w", pady=(8, 6))
+
+        def actualizar_estado_tarifas(*_):
+            try:
+                capacidad_actual = int(capacidad_var.get()) if capacidad_var.get() != "" else -1
+            except ValueError:
+                capacidad_actual = -1
+
+            if capacidad_actual == 0:
+                entrada_hora.state(["disabled"])
+                entrada_media.state(["disabled"])
+                info.config(text="Capacidad en 0: tarifas bloqueadas para edición.")
+            else:
+                entrada_hora.state(["!disabled"])
+                entrada_media.state(["!disabled"])
+                info.config(text="Los cambios aplican solo a vehículos que entren después.")
+
+        capacidad_var.trace_add("write", actualizar_estado_tarifas)
+        actualizar_estado_tarifas()
+
+        def guardar():
+            try:
+                capacidad = int(entrada_capacidad.get().strip())
+            except ValueError:
+                info.config(text="Ingresa una capacidad numérica válida.")
+                return
+
+            if capacidad == 0:
+                hora = float(hora_inicial)
+                media = float(media_inicial)
+            else:
+                try:
+                    hora = float(entrada_hora.get().strip())
+                    media = float(entrada_media.get().strip())
+                except ValueError:
+                    info.config(text="Ingresa valores numéricos válidos para las tarifas.")
+                    return
+
+            mensaje = self.sistema.actualizar_configuracion_tipo(
+                tipo,
+                habilitado_var.get(),
+                capacidad,
+                hora,
+                media
+            )
+            if mensaje != "Configuración actualizada":
+                info.config(text=mensaje)
+                return
+
+            messagebox.showinfo("Configuración", mensaje)
+            modal.destroy()
+            self.tarifa()
+
+        ttk.Button(
+            contenedor,
+            text="Guardar",
+            style="Modern.TButton",
+            command=guardar
+        ).grid(row=5, column=0, sticky="ew", pady=(8, 0))
+        ttk.Button(
+            contenedor,
+            text="Cancelar",
+            style="Modern.TButton",
+            command=modal.destroy
+        ).grid(row=5, column=1, sticky="ew", padx=(10, 0), pady=(8, 0))
         
     def ver_usuarios(self):
         for widget in self.frame_principal.winfo_children():

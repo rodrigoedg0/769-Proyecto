@@ -26,7 +26,7 @@ class Consola:
         p = input("Password: ")
         rol = input("Rol (admin/operador): ")
 
-        print(self.sistema.registrar_usuario(u, p, rol))
+        print(self.sistema.registrar_usuario(u, p, p, rol))
 
     def login(self):
         u = input("Usuario: ")

@@ -214,3 +214,30 @@
 [22:04] juan1 -> Inicio de sesion
 [22:09] juan1 -> Inicio de sesion
 [22:15] juan1 -> Inicio de sesion
+[08:29] rodrigo -> Inicio de sesion
+[08:30] rodrigo -> Inicio de sesion
+[08:34] rodrigo -> Inicio de sesion
+[08:34] rodrigo -> Cierre de sesion
+[08:34] rodrigo -> Inicio de sesion
+[08:37] rodrigo -> Inicio de sesion
+[08:38] rodrigo -> Actualización de tarifas: hora=Q30.0, media hora=Q20.0
+[08:40] rodrigo -> Inicio de sesion
+[08:41] Sistema -> Usuario creado: kevin
+[08:41] kevin -> Inicio de sesion
+[08:41] kevin -> Cierre de sesion
+[08:41] rodrigo -> Inicio de sesion
+[08:48] rodrigo -> Inicio de sesion
+[08:51] rodrigo -> Inicio de sesion
+[08:57] rodrigo -> Inicio de sesion
+[08:57] rodrigo -> Configuración transporte pesado: habilitado=True, capacidad=5, hora=Q25.0, media hora=Q12.5
+[08:59] rodrigo -> Inicio de sesion
+[09:00] rodrigo -> Inicio de sesion
+[09:01] rodrigo -> Configuración transporte pesado: habilitado=True, capacidad=0, hora=Q25.0, media hora=Q12.5
+[09:06] rodrigo -> Inicio de sesion
+[09:07] rodrigo -> Configuración transporte pesado: habilitado=True, capacidad=5, hora=Q50.0, media hora=Q30.0
+[09:08] rodrigo -> Cierre de sesion
+[09:14] Sistema -> Usuario creado: maria (rodrigodiazg.personal@gmail.com)
+[09:14] maria -> Inicio de sesion
+[09:14] maria -> Cierre de sesion
+[09:21] rodrigo -> Inicio de sesion
+[09:22] rodrigo -> Cierre de sesion
