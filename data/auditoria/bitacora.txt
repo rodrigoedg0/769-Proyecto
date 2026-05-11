@@ -241,3 +241,10 @@
 [09:14] maria -> Cierre de sesion
 [09:21] rodrigo -> Inicio de sesion
 [09:22] rodrigo -> Cierre de sesion
+[16:27] john -> Inicio de sesion
+[16:36] Sistema -> Recuperación de contraseña para usuario: john
+[16:36] john -> Inicio de sesion
+[18:58] Sistema -> Usuario creado: mariano
+[18:59] mariano -> Inicio de sesion
+[18:59] mariano -> Cierre de sesion
+[19:02] Sistema -> Usuario creado: pablo

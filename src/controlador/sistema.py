@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from src.modelo.vehiculo import Vehiculo
 from src.modelo.movimiento import Movimiento
 from src.modelo.parqueo import Parqueo
-
+from src.modelo.usuario import Usuario
 
 class Sistema:
     MAX_INTENTOS_LOGIN = 4
@@ -316,10 +316,19 @@ class Sistema:
     # -------------------------
     def registrar_usuario(self, username, password, confirmacion, rol):
         username = username.strip()
+        
         if username=="" or password=="" or confirmacion=="" or rol=="":
             return "verifique sus datos"
         if password!=confirmacion:
             return "verifique su contraseña"
+        if (Usuario.verificar_password(self, password))==False:
+            return """su contraseña debe tener minimo: 
+                    8 caracteres, 
+                    2 numeros, 
+                    1 caracter especial, 
+                    1 minuscula, 
+                    1 mayuscula
+                    tampoco debe llevar espacios"""
 
         usuarios = self._cargar_usuarios()
         for user in usuarios:

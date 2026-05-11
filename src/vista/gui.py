@@ -193,7 +193,7 @@ class App:
         r.set("usuario")
 
         ttk.Label(v, text="Contraseña", style="Modern.TLabel").grid(row=2, column=0, sticky="w", pady=6)
-        p = ttk.Entry(v, width=30, show="*")
+        p = ttk.Entry(v, width=30)
         p.grid(row=2, column=1, pady=6, padx=(10, 0))
 
         ttk.Label(v, text="Confirmación", style="Modern.TLabel").grid(row=3, column=0, sticky="w", pady=6)
@@ -215,6 +215,14 @@ class App:
             if mensaje =="verifique su contraseña":
                 return
             elif mensaje=="verifique sus datos":
+                return
+            elif mensaje=="""su contraseña debe tener minimo: 
+                    8 caracteres, 
+                    2 numeros, 
+                    1 caracter especial, 
+                    1 minuscula, 
+                    1 mayuscula
+                    tampoco debe llevar espacios""":
                 return
             else: 
                 messagebox.showinfo("Info", mensaje)
