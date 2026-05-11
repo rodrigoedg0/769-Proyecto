@@ -432,7 +432,7 @@ class Sistema:
         if not os.path.exists("data/configuracion/usuarios.txt"):
             return []
         return [
-            f"{user['username']},{user['password']},{user['rol']},{user.get('correo', '')}\n"
+            f"{user['username']},{user['rol']},{user.get('correo', '')}\n"
             for user in self._cargar_usuarios()
         ]
 
@@ -472,7 +472,11 @@ class Sistema:
             return str(e)
 
     def obtener_vehiculos(self):
-        return os.listdir("data/vehiculos")
+        lista_vehiculos = []
+        for vehiculo in os.listdir("data/vehiculos"):
+            a = vehiculo.split(".")
+            lista_vehiculos.append(a[0])
+        return lista_vehiculos
 
     def obtener_tipo_vehiculo(self, placa):
         ruta = f"data/vehiculos/{placa.upper()}.txt"

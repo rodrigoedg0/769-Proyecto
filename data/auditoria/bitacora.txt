@@ -252,3 +252,29 @@
 [20:46] john -> Cierre de sesion
 [20:47] rodro -> Inicio de sesion
 [08:59] Sistema -> Usuario creado: Felipe
+[09:31] rodro -> Inicio de sesion
+[09:53] rodro -> Cierre de sesion
+[09:56] rodro -> Inicio de sesion
+[10:08] rodro -> Salida: M458OLP - Q845.0
+[10:09] rodro -> Registro vehiculo: M154HYT
+[10:09] rodro -> Entrada: M154HYT
+[10:10] rodro -> Salida: M154HYT - Q5.0
+[10:23] rodro -> Inicio de sesion
+[10:24] rodro -> Cierre de sesion
+[10:24] john -> Inicio de sesion
+[11:08] john -> Inicio de sesion
+[11:17] john -> Inicio de sesion
+[11:32] john -> Inicio de sesion
+[12:22] john -> Inicio de sesion
+[12:22] john -> Cierre de sesion
+[12:22] john -> Inicio de sesion
+[12:24] john -> Inicio de sesion
+[12:28] john -> Inicio de sesion
+[12:30] john -> Inicio de sesion
+[12:34] john -> Inicio de sesion
+[12:36] john -> Inicio de sesion
+[12:36] john -> Inicio de sesion
+[12:37] john -> Inicio de sesion
+[12:39] john -> Inicio de sesion
+[12:40] john -> Inicio de sesion
+[12:42] john -> Inicio de sesion
