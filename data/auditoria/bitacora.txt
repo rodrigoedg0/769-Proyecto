@@ -248,3 +248,7 @@
 [18:59] mariano -> Inicio de sesion
 [18:59] mariano -> Cierre de sesion
 [19:02] Sistema -> Usuario creado: pablo
+[20:46] john -> Inicio de sesion
+[20:46] john -> Cierre de sesion
+[20:47] rodro -> Inicio de sesion
+[08:59] Sistema -> Usuario creado: Felipe

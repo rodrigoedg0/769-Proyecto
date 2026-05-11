@@ -351,6 +351,14 @@ class Sistema:
             return "verifique sus datos"
         if nueva_password != confirmacion:
             return "verifique su contraseña"
+        if (Usuario.verificar_password(self, nueva_password))==False:
+            return """su contraseña debe tener minimo: 
+                    8 caracteres, 
+                    2 numeros, 
+                    1 caracter especial, 
+                    1 minuscula, 
+                    1 mayuscula
+                    tampoco debe llevar espacios"""
         if not self.Es_admin(clave_admin):
             return "Contraseña de administrador incorrecta"
 
